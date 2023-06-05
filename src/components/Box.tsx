@@ -18,11 +18,9 @@ export const Box = styled('div', {
     size: {
       sm: {
         padding: '$4 $5',
-        gap: '$5',
       },
       md: {
         padding: '$5 $6',
-        gap: '$6',
       },
     },
   },
