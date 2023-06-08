@@ -11,9 +11,9 @@ export interface TextInputProps
 }
 
 export const TextInput = forwardRef<ElementRef<typeof Input>, TextInputProps>(
-  ({ icon: Icon, ...rest }, ref) => {
+  ({ icon: Icon, css, ...rest }, ref) => {
     return (
-      <TextInputContainer>
+      <TextInputContainer className="text-input" css={css}>
         <Input ref={ref} {...rest} />
         <MagnifyingGlass weight="bold" />
       </TextInputContainer>
@@ -22,3 +22,4 @@ export const TextInput = forwardRef<ElementRef<typeof Input>, TextInputProps>(
 )
 
 TextInput.displayName = 'TextInput'
+TextInput.toString = () => '.text-input'

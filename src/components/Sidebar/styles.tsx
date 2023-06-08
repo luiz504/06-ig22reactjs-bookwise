@@ -4,27 +4,19 @@ import { styled } from '~/styles'
 import { Text } from '../Text'
 
 export const Container = styled('aside', {
-  position: 'relative',
-  minHeight: 'calc(100svh - 40px)',
+  minHeight: 'fit-content',
+  height: 'calc(100svh - 40px)',
   borderRadius: '$2xl',
 
   width: 232,
   display: 'flex',
   flexDirection: 'column',
-})
+  backgroundColor: 'red',
 
-export const Background = styled('div', {
-  position: 'absolute',
-  borderRadius: 'inherit',
-
-  inset: 0,
-  width: '100%',
-  height: '100%',
-  overflow: 'hidden',
-
-  img: {
-    objectFit: 'fcover',
-  },
+  backgroundImage: `url(/bg-sidebar.svg)`,
+  backgroundPosition: 'center',
+  backgroundSize: 'cover',
+  overflow: 'auto',
 })
 
 export const Header = styled('div', {
@@ -39,6 +31,7 @@ export const Navbar = styled('nav', {
   paddingLeft: '4.25rem',
   gap: '$4',
   zIndex: 1,
+  marginBottom: '$6',
 })
 
 export const NavItem = styled(Link, {

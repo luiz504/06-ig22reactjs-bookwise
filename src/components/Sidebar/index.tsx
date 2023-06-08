@@ -7,7 +7,6 @@ import logoFull from '~/assets/logo-full.png'
 import { Text } from '../Text'
 
 import {
-  Background,
   Container,
   Footer,
   Header,
@@ -16,18 +15,12 @@ import {
   SignOutButton,
 } from './styles'
 
-import bg from '~/assets/bg-sidebar.svg'
-
 export const Sidebar = () => {
   const logged = true
   const router = useRouter()
 
   return (
     <Container>
-      <Background>
-        <Image src={bg} alt="" priority quality={100} />
-      </Background>
-
       <Header>
         <Image src={logoFull} height={32} priority alt="BookWise logo" />
       </Header>
