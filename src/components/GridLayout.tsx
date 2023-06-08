@@ -9,8 +9,6 @@ export const ContainerGrid = styled('div', {
 })
 
 export const AsideRight = styled('aside', {
-  background: 'purple',
-
   gridRow: '1fr',
 })
 

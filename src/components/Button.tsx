@@ -61,6 +61,7 @@ export const Button = styled('button', {
       },
     },
   },
+  defaultVariants: { variant: 'primary', size: 'md' },
 })
 
 Button.displayName = 'Button'

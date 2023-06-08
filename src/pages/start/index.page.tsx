@@ -7,6 +7,7 @@ import { Text } from '~/components/Text'
 
 import { Header, SectionRecentAvaliations } from './styles'
 import { CardBookAvaliation } from './components/CardBookAvaliation'
+import { BooksSugestionAside } from './components/BooksSugestionAside'
 
 export default function Start() {
   return (
@@ -25,7 +26,10 @@ export default function Start() {
           <CardBookAvaliation />
         </SectionRecentAvaliations>
       </Main>
-      <AsideRight />
+
+      <AsideRight>
+        <BooksSugestionAside />
+      </AsideRight>
     </ContainerGrid>
   )
 }

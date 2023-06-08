@@ -1,10 +1,12 @@
 import { DefaultSeo } from 'next-seo'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { Nunito } from 'next/font/google'
 
 import { globalStyles } from '~/styles/global'
 
 globalStyles()
+const nunito = Nunito({ subsets: ['latin'] })
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -20,7 +22,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Component {...pageProps} />
+      <div className={`${nunito.className}`}>
+        <Component {...pageProps} />
+      </div>
     </>
   )
 }
