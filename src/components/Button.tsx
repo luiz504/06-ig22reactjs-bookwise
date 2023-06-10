@@ -65,3 +65,6 @@ export const Button = styled('button', {
 })
 
 Button.displayName = 'Button'
+Button.defaultProps = {
+  type: 'button',
+}

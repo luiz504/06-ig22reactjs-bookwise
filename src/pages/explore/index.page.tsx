@@ -1,18 +1,27 @@
-import { Sidebar } from '~/components/Sidebar'
-
-import { Container, Main, Header, TopicsList, BooksGridList } from './styles'
-import { Heading } from '~/components/Heading'
+import { useState } from 'react'
+import { NextSeo } from 'next-seo'
+import Image from 'next/image'
 import { Binoculars } from 'phosphor-react'
-import { TextInput } from '~/components/TextInput'
-import { Tag } from '~/components/Tag'
+
 import {
   ItemInfoCol,
   SugestionItem,
 } from '../start/components/BooksSugestionAside/styles'
-
 import { Rating } from '~/components/Rating'
 import { Text } from '~/components/Text'
-import Image from 'next/image'
+import { Sidebar } from '~/components/Sidebar'
+import { Heading } from '~/components/Heading'
+import { TextInput } from '~/components/TextInput'
+import { CommentModal } from './components/CommentModal'
+
+import {
+  Container,
+  Main,
+  Header,
+  TopicsList,
+  TopicItem,
+  BooksGridList,
+} from './styles'
 
 export default function Explore() {
   const books = Array.from({ length: 30 }, (_, index) => ({
@@ -24,45 +33,66 @@ export default function Explore() {
     rating: 4,
   }))
 
+  const [isOpenCommentModal, setIsOpenCommentModal] = useState(false)
+
   return (
-    <Container>
-      <Sidebar />
-      <Main>
-        <Header>
-          <Heading>
-            <Binoculars weight="bold" />
-            Explorar
-          </Heading>
+    <>
+      <NextSeo title="Explorar | BookWise" />
 
-          <TextInput placeholder="Buscar livro ou autor" />
-        </Header>
+      <Container>
+        <Sidebar />
+        <Main>
+          <Header>
+            <Heading>
+              <Binoculars weight="bold" />
+              Explorar
+            </Heading>
 
-        <TopicsList>
-          <Tag selected>Tudo</Tag>
-          <Tag>Computação</Tag>
-          <Tag>Educação</Tag>
-          <Tag>Fantasia</Tag>
-          <Tag>Ficção científica</Tag>
-          <Tag>Horror</Tag>
-          <Tag>HQs</Tag>
-          <Tag>Suspense</Tag>
-        </TopicsList>
+            <TextInput placeholder="Buscar livro ou autor" />
+          </Header>
 
-        <BooksGridList>
-          {books.map((book) => (
-            <SugestionItem key={book.id} size="sm" variant={'secondary'}>
-              <Image src={book.cover_url} height={152} width={108} alt="book" />
+          <TopicsList>
+            <TopicItem selected>Tudo</TopicItem>
+            <TopicItem>Computação</TopicItem>
+            <TopicItem>Educação</TopicItem>
+            <TopicItem>Fantasia</TopicItem>
+            <TopicItem>Ficção científica</TopicItem>
+            <TopicItem>Horror</TopicItem>
+            <TopicItem>HQs</TopicItem>
+            <TopicItem>Suspense</TopicItem>
+          </TopicsList>
 
-              <ItemInfoCol>
-                <Heading size="sm">{book.title}</Heading>
-                <Text size="sm">{book.author}</Text>
+          <BooksGridList>
+            {books.map((book) => (
+              <SugestionItem
+                key={book.id}
+                size="sm"
+                variant={'secondary'}
+                onClick={() => setIsOpenCommentModal(true)}
+              >
+                <Image
+                  src={book.cover_url}
+                  height={152}
+                  width={108}
+                  alt="book"
+                />
 
-                <Rating rating={book.rating} />
-              </ItemInfoCol>
-            </SugestionItem>
-          ))}
-        </BooksGridList>
-      </Main>
-    </Container>
+                <ItemInfoCol>
+                  <Heading size="sm">{book.title}</Heading>
+                  <Text size="sm">{book.author}</Text>
+
+                  <Rating rating={book.rating} />
+                </ItemInfoCol>
+              </SugestionItem>
+            ))}
+          </BooksGridList>
+        </Main>
+      </Container>
+
+      <CommentModal
+        open={isOpenCommentModal}
+        onOpenChange={setIsOpenCommentModal}
+      />
+    </>
   )
 }

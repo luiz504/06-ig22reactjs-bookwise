@@ -5,6 +5,7 @@ import { Nunito } from 'next/font/google'
 
 import { globalStyles } from '~/styles/global'
 
+import '~/lib/dayjs'
 globalStyles()
 const nunito = Nunito({ subsets: ['latin'] })
 

@@ -8,28 +8,33 @@ import { Text } from '~/components/Text'
 import { Header, SectionRecentAvaliations } from './styles'
 import { CardBookAvaliation } from './components/CardBookAvaliation'
 import { BooksSugestionAside } from './components/BooksSugestionAside'
+import { NextSeo } from 'next-seo'
 
 export default function Start() {
   return (
-    <ContainerGrid>
-      <Sidebar />
-      <Main>
-        <Header>
-          <ChartLineUp size={32} weight="bold" />
-          <Heading as="h1" size={'lg'}>
-            Inicio
-          </Heading>
-        </Header>
+    <>
+      <NextSeo title="Início | BookWise" />
 
-        <SectionRecentAvaliations>
-          <Text>Avaliações mais recentes </Text>
-          <CardBookAvaliation />
-        </SectionRecentAvaliations>
-      </Main>
+      <ContainerGrid>
+        <Sidebar />
+        <Main>
+          <Header>
+            <ChartLineUp size={32} weight="bold" />
+            <Heading as="h1" size={'lg'}>
+              Inicio
+            </Heading>
+          </Header>
 
-      <AsideRight>
-        <BooksSugestionAside />
-      </AsideRight>
-    </ContainerGrid>
+          <SectionRecentAvaliations>
+            <Text>Avaliações mais recentes </Text>
+            <CardBookAvaliation />
+          </SectionRecentAvaliations>
+        </Main>
+
+        <AsideRight>
+          <BooksSugestionAside />
+        </AsideRight>
+      </ContainerGrid>
+    </>
   )
 }

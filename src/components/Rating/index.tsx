@@ -26,7 +26,7 @@ export const Rating = ({ starsAmount = 5, rating, style }: RatingProps) => {
   }
 
   return (
-    <Container style={style}>
+    <Container style={style} className={'rating-container'}>
       {stars.map((star) => (
         <Star
           key={star.weight}
@@ -36,3 +36,5 @@ export const Rating = ({ starsAmount = 5, rating, style }: RatingProps) => {
     </Container>
   )
 }
+
+Rating.toString = () => '.rating-container'
