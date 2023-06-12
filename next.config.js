@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  pageExtensions: ['.api.ts', '.api.tsx', 'page.tsx'],
+  pageExtensions: ['page.tsx', 'api.ts', 'api.tsx'],
   images: {
-    domains: ['github.com', 'images.unsplash.com'],
+    domains: [
+      'github.com',
+      'images.unsplash.com',
+      'http://localhost:3000',
+      'public',
+    ],
   },
 }
 

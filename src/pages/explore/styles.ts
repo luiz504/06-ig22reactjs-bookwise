@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Heading } from '~/components/Heading'
 import { TextInput } from '~/components/TextInput'
 import { styled } from '~/styles'
@@ -44,11 +45,12 @@ export const TopicsList = styled('div', {
   marginBottom: '$12',
 })
 
-export const TopicItem = styled('div', {
+export const TopicItem = styled(Link, {
   padding: '$1 $4',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  textDecoration: 'none',
 
   border: '1px solid $purple100',
   borderRadius: 999,
@@ -63,7 +65,7 @@ export const TopicItem = styled('div', {
   },
 
   variants: {
-    selected: {
+    active: {
       true: {
         borderColor: '$purple200',
         background: '$purple200',
