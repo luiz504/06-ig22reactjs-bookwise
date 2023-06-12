@@ -1,18 +1,24 @@
-import { useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import { NextSeo } from 'next-seo'
 import Image from 'next/image'
 import { Binoculars } from 'phosphor-react'
+import { useRouter } from 'next/router'
+import { Category } from '@prisma/client'
+import { GetServerSideProps } from 'next'
 
-import {
-  ItemInfoCol,
-  SugestionItem,
-} from '../start/components/BooksSugestionAside/styles'
 import { Rating } from '~/components/Rating'
 import { Text } from '~/components/Text'
 import { Sidebar } from '~/components/Sidebar'
 import { Heading } from '~/components/Heading'
 import { TextInput } from '~/components/TextInput'
 import { CommentModal } from './components/CommentModal'
+import { serverApi } from '~/lib/axios'
+import { BookWithRate } from '../api/books/get-books.api'
+import { queryBuilder } from '~/utils/queryBuilder'
+import {
+  ItemInfoCol,
+  SugestionItem,
+} from '../start/components/BooksSugestionAside/styles'
 
 import {
   Container,
@@ -23,17 +29,34 @@ import {
   BooksGridList,
 } from './styles'
 
-export default function Explore() {
-  const books = Array.from({ length: 30 }, (_, index) => ({
-    id: index + 1,
-    title: 'A revolucao dos Bichos',
-    author: 'George Orwell',
-    cover_url:
-      'https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-    rating: 4,
-  }))
+interface ExploreProps {
+  categories: Category[]
+  books: BookWithRate[]
+}
+export default function Explore({ books, categories }: ExploreProps) {
+  const router = useRouter()
+  const { category, search } = router.query
+  const selectedCategory = category ? String(category) : undefined
+  const searchValue = search ? String(search) : undefined
 
   const [isOpenCommentModal, setIsOpenCommentModal] = useState(false)
+
+  const inputSearchRef = useRef<HTMLInputElement>(null)
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const inputElement = inputSearchRef.current
+    const inputValue = inputElement?.value
+    if (inputValue !== search) {
+      router.push({
+        pathname: '/explore',
+        query: queryBuilder({
+          category: selectedCategory,
+          search: inputValue,
+        }),
+      })
+    }
+  }
 
   return (
     <>
@@ -42,24 +65,46 @@ export default function Explore() {
       <Container>
         <Sidebar />
         <Main>
-          <Header>
+          <Header as="form" onSubmit={handleSubmit}>
             <Heading>
               <Binoculars weight="bold" />
               Explorar
             </Heading>
 
-            <TextInput placeholder="Buscar livro ou autor" />
+            <TextInput
+              ref={inputSearchRef}
+              placeholder="Buscar livro ou autor"
+              defaultValue={search}
+            />
           </Header>
 
           <TopicsList>
-            <TopicItem selected>Tudo</TopicItem>
-            <TopicItem>Computação</TopicItem>
-            <TopicItem>Educação</TopicItem>
-            <TopicItem>Fantasia</TopicItem>
-            <TopicItem>Ficção científica</TopicItem>
-            <TopicItem>Horror</TopicItem>
-            <TopicItem>HQs</TopicItem>
-            <TopicItem>Suspense</TopicItem>
+            <TopicItem
+              href={{
+                pathname: '/explore',
+                query: queryBuilder({ search: searchValue }),
+              }}
+              active={!selectedCategory}
+            >
+              Tudo
+            </TopicItem>
+
+            {categories.map((cat) => (
+              <TopicItem
+                href={{
+                  pathname: '/explore',
+                  query: queryBuilder({
+                    category: cat.name,
+                    search: searchValue,
+                  }),
+                }}
+                active={selectedCategory === cat.name}
+                prefetch={false}
+                key={cat.id}
+              >
+                {cat.name}
+              </TopicItem>
+            ))}
           </TopicsList>
 
           <BooksGridList>
@@ -71,17 +116,17 @@ export default function Explore() {
                 onClick={() => setIsOpenCommentModal(true)}
               >
                 <Image
-                  src={book.cover_url}
+                  src={book.cover_url.replace('public', '')}
                   height={152}
                   width={108}
                   alt="book"
                 />
 
                 <ItemInfoCol>
-                  <Heading size="sm">{book.title}</Heading>
+                  <Heading size="sm">{book.name}</Heading>
                   <Text size="sm">{book.author}</Text>
 
-                  <Rating rating={book.rating} />
+                  <Rating rating={book.rate} />
                 </ItemInfoCol>
               </SugestionItem>
             ))}
@@ -95,4 +140,23 @@ export default function Explore() {
       />
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { query } = context
+  const { data: categories } = await serverApi.get('/categories/get-categories')
+
+  const { data: books } = await serverApi.get<BookWithRate>(
+    '/books/get-books',
+    {
+      params: {
+        category: query.category,
+        search: query.search,
+      },
+    },
+  )
+
+  return {
+    props: { books, categories },
+  }
 }
