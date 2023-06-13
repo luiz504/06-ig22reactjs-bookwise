@@ -1,10 +1,13 @@
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent, useRef } from 'react'
 import { NextSeo } from 'next-seo'
 import Image from 'next/image'
 import { Binoculars } from 'phosphor-react'
 import { useRouter } from 'next/router'
-import { Category } from '@prisma/client'
-import { GetServerSideProps } from 'next'
+import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
+
+import { api } from '~/lib/axios'
+import { buildQueryParams, queryParamToString } from '~/utils'
 
 import { Rating } from '~/components/Rating'
 import { Text } from '~/components/Text'
@@ -12,13 +15,7 @@ import { Sidebar } from '~/components/Sidebar'
 import { Heading } from '~/components/Heading'
 import { TextInput } from '~/components/TextInput'
 import { CommentModal } from './components/CommentModal'
-import { serverApi } from '~/lib/axios'
-import { BookWithRate } from '../api/books/get-books.api'
-import { queryBuilder } from '~/utils/queryBuilder'
-import {
-  ItemInfoCol,
-  SugestionItem,
-} from '../start/components/BooksSugestionAside/styles'
+import { Skeleton } from '~/components/skeleton'
 
 import {
   Container,
@@ -27,19 +24,22 @@ import {
   TopicsList,
   TopicItem,
   BooksGridList,
+  ItemInfoCol,
+  SugestionItem,
 } from './styles'
 
-interface ExploreProps {
-  categories: Category[]
-  books: BookWithRate[]
-}
-export default function Explore({ books, categories }: ExploreProps) {
-  const router = useRouter()
-  const { category, search } = router.query
-  const selectedCategory = category ? String(category) : undefined
-  const searchValue = search ? String(search) : undefined
+import { GetCategoriesResponse } from '../api/categories/get.api'
+import { GetBooksParams, GetBooksResponse } from '../api/books/get.api'
 
-  const [isOpenCommentModal, setIsOpenCommentModal] = useState(false)
+export default function Explore() {
+  const router = useRouter()
+  const { query } = router
+
+  const category = queryParamToString(query.category)
+  const search = queryParamToString(query.search)
+  const bookOpenId = queryParamToString(query.bookOpenId)
+
+  const isOpenBookModal = !!bookOpenId
 
   const inputSearchRef = useRef<HTMLInputElement>(null)
 
@@ -50,13 +50,48 @@ export default function Explore({ books, categories }: ExploreProps) {
     if (inputValue !== search) {
       router.push({
         pathname: '/explore',
-        query: queryBuilder({
-          category: selectedCategory,
+        query: buildQueryParams({
+          category,
           search: inputValue,
         }),
       })
     }
   }
+
+  const handleCloseModal = () => {
+    router.push({
+      pathname: '/explore',
+      query: buildQueryParams({
+        category,
+        search,
+      }),
+    })
+  }
+
+  const { data: categories, isLoading: isLoadingCategories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async ({ signal }) => {
+      const { data } = await api.get<GetCategoriesResponse>('/categories/get', {
+        signal,
+      })
+      return data
+    },
+  })
+
+  const skeletonList = Array.from({ length: 2 }, (_, i) => ({ id: i }))
+
+  const { data: books, isLoading: isLoadingBooks } = useQuery({
+    queryKey: ['books', { search, category }],
+    queryFn: async ({ signal }) => {
+      const params: GetBooksParams = {
+        search,
+        category,
+      }
+      const { data } = await api.get<GetBooksResponse>('/books/get', { params })
+      return data
+    },
+    staleTime: 1000 * 60 * 2, // 2min
+  })
 
   return (
     <>
@@ -79,84 +114,96 @@ export default function Explore({ books, categories }: ExploreProps) {
           </Header>
 
           <TopicsList>
-            <TopicItem
-              href={{
-                pathname: '/explore',
-                query: queryBuilder({ search: searchValue }),
-              }}
-              active={!selectedCategory}
-            >
-              Tudo
-            </TopicItem>
+            {isLoadingCategories &&
+              skeletonList.map((cat) => (
+                <Skeleton
+                  key={cat.id}
+                  css={{ height: 36, width: 120 }}
+                  roundedFull
+                  bg={'gray700'}
+                />
+              ))}
 
-            {categories.map((cat) => (
-              <TopicItem
-                href={{
-                  pathname: '/explore',
-                  query: queryBuilder({
-                    category: cat.name,
-                    search: searchValue,
-                  }),
-                }}
-                active={selectedCategory === cat.name}
-                prefetch={false}
-                key={cat.id}
-              >
-                {cat.name}
-              </TopicItem>
-            ))}
+            {!isLoadingCategories && (
+              <>
+                <TopicItem
+                  href={{
+                    pathname: '/explore',
+                    query: buildQueryParams({ search }),
+                  }}
+                  active={!category}
+                >
+                  Tudo
+                </TopicItem>
+
+                {categories?.map((cat) => (
+                  <TopicItem
+                    href={{
+                      pathname: '/explore',
+                      query: buildQueryParams({
+                        category: cat.name,
+                        search,
+                      }),
+                    }}
+                    active={category === cat.name}
+                    prefetch={false}
+                    key={cat.id}
+                  >
+                    {cat.name}
+                  </TopicItem>
+                ))}
+              </>
+            )}
           </TopicsList>
 
           <BooksGridList>
-            {books.map((book) => (
-              <SugestionItem
-                key={book.id}
-                size="sm"
-                variant={'secondary'}
-                onClick={() => setIsOpenCommentModal(true)}
-              >
-                <Image
-                  src={book.cover_url.replace('public', '')}
-                  height={152}
-                  width={108}
-                  alt="book"
+            {isLoadingBooks &&
+              skeletonList.map((s) => (
+                <Skeleton
+                  key={s.id}
+                  css={{ height: 188, borderRadius: '$md' }}
+                  bg={'gray700'}
                 />
+              ))}
 
-                <ItemInfoCol>
-                  <Heading size="sm">{book.name}</Heading>
-                  <Text size="sm">{book.author}</Text>
+            {!isLoadingBooks &&
+              books?.map((book) => (
+                <SugestionItem
+                  key={book.id}
+                  size="sm"
+                  variant={'secondary'}
+                  as={Link}
+                  href={{
+                    pathname: '/explore',
+                    query: buildQueryParams({
+                      search,
+                      category,
+                      bookOpenId: book.id,
+                    }),
+                  }}
+                >
+                  <Image
+                    src={book.cover_url.replace('public', '')}
+                    height={152}
+                    width={108}
+                    alt="book"
+                  />
 
-                  <Rating rating={book.rate} />
-                </ItemInfoCol>
-              </SugestionItem>
-            ))}
+                  <ItemInfoCol>
+                    <Heading size="sm">{book.name}</Heading>
+                    <Text size="sm">{book.author}</Text>
+
+                    <Rating rating={book.rate} />
+                  </ItemInfoCol>
+                </SugestionItem>
+              ))}
           </BooksGridList>
         </Main>
       </Container>
 
-      <CommentModal
-        open={isOpenCommentModal}
-        onOpenChange={setIsOpenCommentModal}
-      />
+      {isOpenBookModal && (
+        <CommentModal open={isOpenBookModal} onOpenChange={handleCloseModal} />
+      )}
     </>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { query } = context
-  const { data: categories } = await serverApi.get('/categories/get-categories')
-
-  const { data: books } = await serverApi.get<BookWithRate>(
-    '/books/get-books',
-    {
-      params: {
-        category: query.category,
-        search: query.search,
-      },
-    },
-  )
-
-  return {
-    props: { books, categories },
-  }
 }
