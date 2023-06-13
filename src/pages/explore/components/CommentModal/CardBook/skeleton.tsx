@@ -1,9 +1,7 @@
-import Image from 'next/image'
 import { BookOpen, BookmarkSimple } from 'phosphor-react'
 
-import { Heading } from '~/components/Heading'
 import { Text } from '~/components/Text'
-import { Rating } from '~/components/Rating'
+import { Skeleton } from '~/components/skeleton'
 
 import {
   CardBookContainer,
@@ -13,42 +11,31 @@ import {
   ExtraInforCol,
 } from './styles'
 
-import { BookWithRate } from '~/types/BookWithRate'
-import { FC } from 'react'
-
-type CardBookProps = {
-  book: BookWithRate
-}
-
-export const CardBook: FC<CardBookProps> = ({ book }) => {
+export const CardBookSkeleton = () => {
   return (
     <CardBookContainer>
       <MainInfoRow>
-        <Image
-          src={book.cover_url.replace('public', '')}
-          alt="Book Cover"
-          height={242}
-          width={171.65}
-        />
+        <Skeleton css={{ height: 242, width: 171.65 }} />
 
         <MainInfoCol>
-          <Heading>{book.name}</Heading>
+          <Skeleton as="h2" css={{ height: 18, width: '100%' }} />
 
-          <Text>{book.author}</Text>
+          <Skeleton as="p" css={{ height: 16, width: '100%' }} />
 
           <div className="rating-row">
-            <Rating rating={book.rate} />
+            <Skeleton css={{ height: 20, width: 116 }} />
 
-            <Text size="sm">{book.ratings.length} avaliacoes</Text>
+            <Skeleton as="p" css={{ height: 14, width: 77 }} />
           </div>
         </MainInfoCol>
       </MainInfoRow>
+
       <ExtraInfoRow>
         <ExtraInforCol>
           <BookmarkSimple weight="bold" size={24} />
           <div>
             <Text size="sm">Categoria</Text>
-            <Heading size="sm">Computação, Educação</Heading>
+            <Skeleton as="h2" css={{ height: 22, width: 120 }} />
           </div>
         </ExtraInforCol>
 
@@ -56,7 +43,7 @@ export const CardBook: FC<CardBookProps> = ({ book }) => {
           <BookOpen weight="bold" size={24} />
           <div>
             <Text size="sm">Páginas</Text>
-            <Heading size="sm">160</Heading>
+            <Skeleton as="h2" css={{ height: 22, width: 40 }} />
           </div>
         </ExtraInforCol>
       </ExtraInfoRow>

@@ -10,17 +10,43 @@ import {
   AvaliationsList,
 } from './styles'
 import { X } from 'phosphor-react'
+import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
 
-import { CardBook } from './CardBook'
+import {
+  GetBookByIdParams,
+  GetBookByIdResponse,
+} from '~/pages/api/book/get.api'
+import { api } from '~/lib/axios'
+
+import { buildQueryParams, queryParamToString } from '~/utils'
+
 import { Text } from '~/components/Text'
 import { Button } from '~/components/Button'
+import { CardBook } from './CardBook'
 import { CardPost } from './CardPost'
 import { CardAvaliator } from './CardAvaliator'
+import { CardBookSkeleton } from './CardBook/skeleton'
 
 type CommentModalProps = ComponentProps<typeof Root>
 
 export const CommentModal = (props: CommentModalProps) => {
   const [isOpenAvaliator, setIsOpenAvaliator] = useState(false)
+  const router = useRouter()
+
+  const category = queryParamToString(router.query.category)
+  const search = queryParamToString(router.query.search)
+  const bookOpenId = queryParamToString(router.query.bookOpenId)
+
+  const redirect = () => {
+    router.push({
+      pathname: '/explore',
+      query: buildQueryParams({
+        category,
+        search,
+      }),
+    })
+  }
 
   const handleOpenAvaliator = () => {
     const loggedIn = true
@@ -28,6 +54,25 @@ export const CommentModal = (props: CommentModalProps) => {
       setIsOpenAvaliator(true)
     }
   }
+
+  const { data: bookData, isLoading: isLoadingBook } = useQuery({
+    queryKey: ['book-data', { bookOpenId }],
+    queryFn: async () => {
+      if (!bookOpenId) return undefined
+      const params: GetBookByIdParams = { bookId: bookOpenId }
+      try {
+        const { data } = await api.get<GetBookByIdResponse>('/book/get', {
+          params,
+        })
+        return data
+      } catch (err) {
+        redirect()
+        throw err
+      }
+    },
+    retry: false,
+    enabled: !!bookOpenId,
+  })
 
   return (
     <Root {...props}>
@@ -38,7 +83,8 @@ export const CommentModal = (props: CommentModalProps) => {
             <X weight="bold" size={15} />
           </CloseBtn>
 
-          <CardBook />
+          {isLoadingBook && <CardBookSkeleton />}
+          {!isLoadingBook && !!bookData && <CardBook book={bookData} />}
 
           <AvaliationsSection>
             <AvaliationLabelAndActions>

@@ -1,5 +1,7 @@
 import Link from 'next/link'
+import { Box } from '~/components/Box'
 import { Heading } from '~/components/Heading'
+import { Text } from '~/components/Text'
 import { TextInput } from '~/components/TextInput'
 import { styled } from '~/styles'
 
@@ -18,6 +20,7 @@ export const Header = styled('header', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+  gap: '$4',
   marginBottom: '$10',
 
   [`> ${Heading}`]: {
@@ -79,4 +82,29 @@ export const BooksGridList = styled('div', {
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
   gap: '$5',
+})
+
+export const SugestionItem = styled(Box, {
+  gap: '$5',
+  textDecoration: 'none',
+  color: '$gray100',
+
+  img: {
+    borderRadius: '$xs',
+  },
+
+  '&:hover': {
+    borderColor: '$gray600',
+    transition: 'border-color 150ms',
+  },
+})
+
+export const ItemInfoCol = styled('div', {
+  [`> ${Text}`]: {
+    color: '$gray400',
+    marginBottom: 'auto',
+  },
+
+  display: 'flex',
+  flexDirection: 'column',
 })

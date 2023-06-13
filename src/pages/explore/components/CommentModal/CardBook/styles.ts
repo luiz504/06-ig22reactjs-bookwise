@@ -21,6 +21,14 @@ export const MainInfoRow = styled('div', {
 export const MainInfoCol = styled('div', {
   display: 'flex',
   flexDirection: 'column',
+  flex: 1,
+  h2: {
+    marginBottom: '$2',
+  },
+
+  '> p': {
+    color: '$gray300',
+  },
 
   '.rating-row': {
     marginTop: 'auto',

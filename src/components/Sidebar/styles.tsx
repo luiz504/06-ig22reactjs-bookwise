@@ -11,7 +11,7 @@ export const Container = styled('aside', {
   width: 232,
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: 'red',
+  backgroundColor: '$gray800',
 
   backgroundImage: `url(/bg-sidebar.svg)`,
   backgroundPosition: 'center',

@@ -2,7 +2,7 @@ type QueryOptions = {
   [key: string]: string | undefined
 }
 
-export const queryBuilder = (queryOptions: {
+export const buildQueryParams = (queryOptions: {
   [key: string]: string | undefined
 }) => {
   if (typeof queryOptions !== 'object' || queryOptions === null) {
