@@ -26,6 +26,7 @@ import {
   BooksGridList,
   ItemInfoCol,
   SugestionItem,
+  FeedbackText,
 } from './styles'
 
 import { GetCategoriesResponse } from '../api/categories/get.api'
@@ -80,7 +81,11 @@ export default function Explore() {
 
   const skeletonList = Array.from({ length: 2 }, (_, i) => ({ id: i }))
 
-  const { data: books, isLoading: isLoadingBooks } = useQuery({
+  const {
+    data: books,
+    isLoading: isLoadingBooks,
+    isSuccess: isSuccessBooks,
+  } = useQuery({
     queryKey: ['books', { search, category }],
     queryFn: async ({ signal }) => {
       const params: GetBooksParams = {
@@ -92,6 +97,31 @@ export default function Explore() {
     },
     staleTime: 1000 * 60 * 2, // 2min
   })
+
+  const feedbackMessage = () => {
+    const hasSearchText = !!search?.length
+    const hasCategorySelected = !!category?.length
+
+    if (hasSearchText && hasCategorySelected) {
+      return (
+        <>
+          Não foram encontrados resultados para a sua pesquisa com o termo{' '}
+          <strong>{search}</strong> na categoria selecionada. Por favor, tente
+          novamente com termos diferentes ou remova a categoria para expandir
+          sua busca.
+        </>
+      )
+    }
+
+    if (hasSearchText && !hasCategorySelected) {
+      return 'Não foram encontrados resultados para a sua pesquisa. Por favor, tente novamente com termos diferentes.'
+    }
+
+    if (!hasSearchText && hasCategorySelected) {
+      return 'Não foram encontrados resultados para a categoria selecionada. Por favor, tente novamente com uma categoria diferente.'
+    }
+    return 'Nenhum livro foi encontrado.'
+  }
 
   return (
     <>
@@ -166,37 +196,44 @@ export default function Explore() {
                 />
               ))}
 
-            {!isLoadingBooks &&
-              books?.map((book) => (
-                <SugestionItem
-                  key={book.id}
-                  size="sm"
-                  variant={'secondary'}
-                  as={Link}
-                  href={{
-                    pathname: '/explore',
-                    query: buildQueryParams({
-                      search,
-                      category,
-                      bookOpenId: book.id,
-                    }),
-                  }}
-                >
-                  <Image
-                    src={book.cover_url.replace('public', '')}
-                    height={152}
-                    width={108}
-                    alt="book"
-                  />
+            {!isLoadingBooks && (
+              <>
+                {books?.map((book) => (
+                  <SugestionItem
+                    key={book.id}
+                    size="sm"
+                    variant={'secondary'}
+                    as={Link}
+                    href={{
+                      pathname: '/explore',
+                      query: buildQueryParams({
+                        search,
+                        category,
+                        bookOpenId: book.id,
+                      }),
+                    }}
+                  >
+                    <Image
+                      src={book.cover_url.replace('public', '')}
+                      height={152}
+                      width={108}
+                      alt="book"
+                    />
 
-                  <ItemInfoCol>
-                    <Heading size="sm">{book.name}</Heading>
-                    <Text size="sm">{book.author}</Text>
+                    <ItemInfoCol>
+                      <Heading size="sm">{book.name}</Heading>
+                      <Text size="sm">{book.author}</Text>
 
-                    <Rating rating={book.rate} />
-                  </ItemInfoCol>
-                </SugestionItem>
-              ))}
+                      <Rating rating={book.rate} />
+                    </ItemInfoCol>
+                  </SugestionItem>
+                ))}
+
+                {!books?.length && isSuccessBooks && (
+                  <FeedbackText size="sm">{feedbackMessage()}</FeedbackText>
+                )}
+              </>
+            )}
           </BooksGridList>
         </Main>
       </Container>
