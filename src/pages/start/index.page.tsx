@@ -1,21 +1,43 @@
-import { Sidebar } from '~/components/Sidebar'
-
-import { AsideRight, ContainerGrid, Main } from '~/components/GridLayout'
+import { NextSeo } from 'next-seo'
+import { useQuery } from '@tanstack/react-query'
 import { ChartLineUp } from 'phosphor-react'
+
+import { api } from '~/lib/axios'
+
+import { Sidebar } from '~/components/Sidebar'
+import { AsideRight } from '~/components/GridLayout'
 import { Heading } from '~/components/Heading'
 import { Text } from '~/components/Text'
-
-import { Header, SectionRecentAvaliations } from './styles'
 import { CardBookAvaliation } from './components/CardBookAvaliation'
 import { BooksSugestionAside } from './components/BooksSugestionAside'
-import { NextSeo } from 'next-seo'
+
+import {
+  Container,
+  Main,
+  Header,
+  SectionRecentAvaliations,
+  AvaliationsSectAndSuggestionsContainer,
+} from './styles'
+
+import { GetAvaliationsResponse } from '../api/avaliations/get.api'
 
 export default function Start() {
+  const { data } = useQuery({
+    queryKey: ['avaliations-recent'],
+    queryFn: async () => {
+      const { data } = await api.get<GetAvaliationsResponse>('/avaliations/get')
+      return data
+    },
+  })
+
+  // const totalCount = data?.total_count
+  const avaliations = data?.items
+
   return (
     <>
       <NextSeo title="Início | BookWise" />
 
-      <ContainerGrid>
+      <Container>
         <Sidebar />
         <Main>
           <Header>
@@ -25,16 +47,21 @@ export default function Start() {
             </Heading>
           </Header>
 
-          <SectionRecentAvaliations>
-            <Text>Avaliações mais recentes </Text>
-            <CardBookAvaliation />
-          </SectionRecentAvaliations>
-        </Main>
+          <AvaliationsSectAndSuggestionsContainer>
+            <SectionRecentAvaliations>
+              <Text>Avaliações mais recentes </Text>
 
-        <AsideRight>
-          <BooksSugestionAside />
-        </AsideRight>
-      </ContainerGrid>
+              {avaliations?.map((avaliation) => (
+                <CardBookAvaliation key={avaliation.id} data={avaliation} />
+              ))}
+            </SectionRecentAvaliations>
+
+            <AsideRight>
+              <BooksSugestionAside />
+            </AsideRight>
+          </AvaliationsSectAndSuggestionsContainer>
+        </Main>
+      </Container>
     </>
   )
 }

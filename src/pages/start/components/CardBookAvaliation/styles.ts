@@ -4,6 +4,9 @@ import { styled } from '~/styles'
 
 export const Container = styled(Box, {
   flexDirection: 'column',
+  [`& + &`]: {
+    marginTop: '$3',
+  },
 })
 
 export const Header = styled('div', {

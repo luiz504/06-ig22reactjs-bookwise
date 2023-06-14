@@ -8,6 +8,7 @@ import {
   radii,
   space,
 } from './tokens'
+import { media } from './tokens/media'
 
 export * from './css/scrollbars'
 
@@ -30,6 +31,7 @@ export const {
     minHeight: 'space',
     maxHeight: 'space',
   },
+  media,
   theme: {
     colors,
     fontSizes,
