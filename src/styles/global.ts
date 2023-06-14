@@ -1,5 +1,5 @@
 import { globalCss } from './index'
-import { scrollbar, scrollbarThin } from './css/scrollbars'
+import { scrollbarThin } from './css/scrollbars'
 
 export const globalStyles = globalCss({
   '*': {
@@ -12,7 +12,6 @@ export const globalStyles = globalCss({
     backgroundColor: '$gray800',
     color: '$gray100',
     '-webkit-font-smoothing': 'antialiased',
-    ...scrollbar,
   },
 
   'body, button, textarea, input': {
@@ -21,7 +20,7 @@ export const globalStyles = globalCss({
     fontSize: '$md',
   },
 
-  'html, body': {
+  html: {
     scrollbarGutter: 'stable',
     ...scrollbarThin,
   },

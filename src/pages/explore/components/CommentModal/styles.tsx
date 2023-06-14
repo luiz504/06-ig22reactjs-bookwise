@@ -36,6 +36,7 @@ export const Content = styled(Dialog.Content, {
   display: 'flex',
   flexDirection: 'column',
   padding: '$6 $12',
+  // backgroundColor: 'red',
 })
 
 export const CloseBtn = styled(Dialog.Close, {
