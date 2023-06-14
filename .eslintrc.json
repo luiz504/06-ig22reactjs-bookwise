@@ -8,6 +8,7 @@
   "rules": {
     "no-console": "warn",
     "@tanstack/query/exhaustive-deps": "error",
-    "@tanstack/query/prefer-query-object-syntax": "error"
+    "@tanstack/query/prefer-query-object-syntax": "error",
+    "camelcase": "off"
   }
 }

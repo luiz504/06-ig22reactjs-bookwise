@@ -1,6 +1,10 @@
+import { FC } from 'react'
+import Image from 'next/image'
+
 import { Text } from '~/components/Text'
 import { Rating } from '~/components/Rating'
 import { ProfileImage } from '~/components/ProfileImage'
+import { Heading } from '~/components/Heading'
 
 import {
   BookInfoRow,
@@ -9,44 +13,63 @@ import {
   Header,
   UserInfo,
 } from './styles'
-import Image from 'next/image'
-import { Heading } from '~/components/Heading'
+import { useDateFormatter } from '~/hooks/useDateFormater'
 
-export const CardBookAvaliation = () => {
+type CardBookAvaliationProps = {
+  data: {
+    id: string
+    created_at: Date
+    description: string
+    rate: number
+    user: {
+      name: string
+      avatar_url: string | null
+    }
+    book: {
+      name: string
+      author: string
+      cover_url: string
+    }
+  }
+}
+
+export const CardBookAvaliation: FC<CardBookAvaliationProps> = ({ data }) => {
+  const { book, user, rate, created_at, description } = data
+
+  const { createdDateTime, createdTimeTitle, distanceFromNow } =
+    useDateFormatter(created_at)
+
   return (
     <Container variant={'secondary'}>
       <Header>
         <ProfileImage
-          src={'https://github.com/luiz504.png'}
+          src={user.avatar_url || ''}
           size={40}
           alt="user profile"
         />
         <UserInfo>
-          <Text size="md">Luiz Bueno</Text>
-          <time>Hoje</time>
+          <Text size="md">{user.name}</Text>
+          <time dateTime={createdDateTime || ''} title={createdTimeTitle || ''}>
+            {distanceFromNow}
+          </time>
         </UserInfo>
 
-        <Rating rating={4} />
+        <Rating rating={rate} />
       </Header>
       <BookInfoRow>
         <Image
-          src={'https://github.com/luiz504.png'}
+          src={book.cover_url?.replace('public', '')}
           height={152}
           width={108}
-          alt="book name cover"
+          alt="book cover image"
         />
         <BookInfoSection>
-          <Heading size={'sm'}>O Hobbit</Heading>
+          <Heading size={'sm'}>{book.name}</Heading>
           <Text as="span" size={'sm'}>
-            J.R.R. Tolkien
+            {book.author}
           </Text>
 
-          <Text size={'sm'}>
-            Semper et sapien proin vitae nisi. Feugiat neque integer donec et
-            aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo
-            a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed
-            vulputate massa velit nibh... ver mais
-          </Text>
+          <Text size={'sm'}>{description}</Text>
         </BookInfoSection>
       </BookInfoRow>
     </Container>
