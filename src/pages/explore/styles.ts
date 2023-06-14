@@ -108,3 +108,11 @@ export const ItemInfoCol = styled('div', {
   display: 'flex',
   flexDirection: 'column',
 })
+
+export const FeedbackText = styled(Text, {
+  strong: {
+    fontStyle: 'italic',
+    color: '$purple100',
+    fontSize: '$md',
+  },
+})

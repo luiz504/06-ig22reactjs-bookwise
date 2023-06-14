@@ -1,4 +1,19 @@
 import { ComponentProps, useState } from 'react'
+import { X } from 'phosphor-react'
+import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
+
+import { api } from '~/lib/axios'
+
+import { buildQueryParams, queryParamToString } from '~/utils'
+
+import { Text } from '~/components/Text'
+import { Button } from '~/components/Button'
+import { CardBook } from './CardBook'
+import { CardAvaliation } from './CardAvaliation'
+import { CardAvaliator } from './CardAvaliator'
+import { CardBookSkeleton } from './CardBook/skeleton'
+
 import {
   Root,
   Portal,
@@ -9,24 +24,15 @@ import {
   AvaliationLabelAndActions,
   AvaliationsList,
 } from './styles'
-import { X } from 'phosphor-react'
-import { useRouter } from 'next/router'
-import { useQuery } from '@tanstack/react-query'
 
+import {
+  GetBookAvaliationsParams,
+  GetBookAvaliationsResponse,
+} from '~/pages/api/book/avaliations/get.api'
 import {
   GetBookByIdParams,
   GetBookByIdResponse,
 } from '~/pages/api/book/get.api'
-import { api } from '~/lib/axios'
-
-import { buildQueryParams, queryParamToString } from '~/utils'
-
-import { Text } from '~/components/Text'
-import { Button } from '~/components/Button'
-import { CardBook } from './CardBook'
-import { CardPost } from './CardPost'
-import { CardAvaliator } from './CardAvaliator'
-import { CardBookSkeleton } from './CardBook/skeleton'
 
 type CommentModalProps = ComponentProps<typeof Root>
 
@@ -74,6 +80,25 @@ export const CommentModal = (props: CommentModalProps) => {
     enabled: !!bookOpenId,
   })
 
+  const bookId = bookData?.id
+
+  const { data: bookAvaliationsData } = useQuery({
+    queryKey: ['book-avaliations', { bookId }],
+    queryFn: async () => {
+      if (!bookId) return
+      const params: GetBookAvaliationsParams = {
+        bookId,
+      }
+      const { data } = await api.get<GetBookAvaliationsResponse>(
+        '/book/avaliations/get',
+        { params },
+      )
+      return data
+    },
+    enabled: !!bookId,
+    retry: false,
+  })
+
   return (
     <Root {...props}>
       <Portal>
@@ -99,7 +124,10 @@ export const CommentModal = (props: CommentModalProps) => {
 
             <AvaliationsList>
               {isOpenAvaliator && <CardAvaliator />}
-              <CardPost />
+
+              {bookAvaliationsData?.map((aval) => (
+                <CardAvaliation key={aval.id} avaliation={aval} />
+              ))}
             </AvaliationsList>
           </AvaliationsSection>
         </Content>

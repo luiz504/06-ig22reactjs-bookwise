@@ -7,15 +7,10 @@ import { Heading } from '~/components/Heading'
 import { Rating } from '~/components/Rating'
 import { Text } from '~/components/Text'
 
-import {
-  Container,
-  Header,
-  ItemInfoCol,
-  SugestionItem,
-  SuggestionsList,
-} from './styles'
+import { Container, Header, SuggestionsList } from './styles'
 
 import Link from 'next/link'
+import { ItemInfoCol, SugestionItem } from '~/pages/explore/styles'
 
 export const BooksSugestionAside = () => {
   return (

@@ -9,6 +9,8 @@ import {
   space,
 } from './tokens'
 
+export * from './css/scrollbars'
+
 export const {
   styled,
   css,
