@@ -1,5 +1,6 @@
+import { Fragment, useEffect, useRef } from 'react'
 import { NextSeo } from 'next-seo'
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { ChartLineUp } from 'phosphor-react'
 
 import { api } from '~/lib/axios'
@@ -19,19 +20,53 @@ import {
   AvaliationsSectAndSuggestionsContainer,
 } from './styles'
 
-import { GetAvaliationsResponse } from '../api/avaliations/get.api'
+import {
+  GetAvaliationsParams,
+  GetAvaliationsResponse,
+} from '../api/avaliations/get.api'
+import { CardBookAvaliationSkeleton } from './components/CardBookAvaliation/skeleton'
+import { useIntersection } from '~/hooks/useIntersection'
 
 export default function Start() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['avaliations-recent'],
-    queryFn: async () => {
-      const { data } = await api.get<GetAvaliationsResponse>('/avaliations/get')
-      return data
-    },
+  const { data, isLoading, fetchNextPage, isInitialLoading, hasNextPage } =
+    useInfiniteQuery({
+      queryKey: ['avaliations-recent'],
+      queryFn: async ({ pageParam }) => {
+        const params: GetAvaliationsParams = {
+          per_page: 5,
+          page: pageParam,
+        }
+        const { data } = await api.get<GetAvaliationsResponse>(
+          '/avaliations/get',
+          { params },
+        )
+        return data
+      },
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage.hasNextPage) {
+          return pages.length + 1
+        }
+        return undefined
+      },
+    })
+
+  const skeletonList = Array.from({ length: 3 }, (_, i) => ({ id: i }))
+
+  const pages = data?.pages
+
+  const loadMoreSkeletonRef = useRef<HTMLDivElement>(null)
+
+  const { ref, entry } = useIntersection({
+    root: loadMoreSkeletonRef.current,
+    threshold: 1,
+    rootMargin: '450px',
   })
 
-  // const totalCount = data?.total_count
-  const avaliations = data?.items
+  useEffect(() => {
+    if (entry?.isIntersecting && !isLoading) {
+      fetchNextPage()
+    }
+  }, [entry, isLoading, fetchNextPage])
 
   return (
     <>
@@ -50,12 +85,22 @@ export default function Start() {
           <AvaliationsSectAndSuggestionsContainer>
             <SectionRecentAvaliations>
               <Text>Avaliações mais recentes </Text>
+              {isInitialLoading &&
+                skeletonList.map((item) => (
+                  <CardBookAvaliationSkeleton key={item.id} />
+                ))}
 
-              {avaliations?.map((avaliation) => (
-                <CardBookAvaliation key={avaliation.id} data={avaliation} />
+              {pages?.map((page, i) => (
+                <Fragment key={i}>
+                  {page.items.map((item) => (
+                    <CardBookAvaliation key={item.id} data={item} />
+                  ))}
+                </Fragment>
               ))}
 
-              {!isLoading && !avaliations?.length && (
+              {hasNextPage && <CardBookAvaliationSkeleton ref={ref} />}
+
+              {!isLoading && !pages?.length && (
                 <FeedbackText size="sm">
                   Não foram encontradas avaliações.
                 </FeedbackText>
