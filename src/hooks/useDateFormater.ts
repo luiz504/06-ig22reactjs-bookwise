@@ -10,7 +10,7 @@ export const useDateFormatter = (date: Date | string): DateFormaterResult => {
 
   if (parsedDate.isValid()) {
     const distanceFromNow = dayjs().to(parsedDate)
-    const createdTimeTitle = parsedDate.format('YYYY-MM-DD HH:mm')
+    const createdTimeTitle = parsedDate.format('YYYY-MM-DD[ às ]HH:mm[h]')
     const createdDateTime = parsedDate.format()
 
     return { distanceFromNow, createdTimeTitle, createdDateTime }

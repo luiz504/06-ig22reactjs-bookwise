@@ -4,7 +4,7 @@ import { Binoculars, ChartLineUp, SignOut, User } from 'phosphor-react'
 
 import logoFull from '~/assets/logo-full.png'
 
-import { Text } from '../Text'
+import { Text } from '../texts/Text'
 
 import {
   Container,

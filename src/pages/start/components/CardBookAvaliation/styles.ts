@@ -1,5 +1,6 @@
 import { Box } from '~/components/Box'
-import { Text } from '~/components/Text'
+import { Text } from '~/components/texts'
+
 import { styled } from '~/styles'
 
 export const Container = styled(Box, {
@@ -33,6 +34,7 @@ export const UserInfo = styled('div', {
 
 export const BookInfoRow = styled('article', {
   display: 'flex',
+
   gap: '$5',
 
   img: {
@@ -43,6 +45,7 @@ export const BookInfoRow = styled('article', {
 export const BookInfoSection = styled('div', {
   display: 'flex',
   flexDirection: 'column',
+  flex: 1,
   h2: {
     lineHeight: '$short',
   },

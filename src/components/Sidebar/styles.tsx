@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { styled } from '~/styles'
-
-import { Text } from '../Text'
+import { Text } from '../texts'
 
 export const Container = styled('aside', {
   minHeight: 'fit-content',

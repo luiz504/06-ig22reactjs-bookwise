@@ -1,6 +1,6 @@
 import { BookOpen, BookmarkSimple } from 'phosphor-react'
 
-import { Text } from '~/components/Text'
+import { Text } from '~/components/texts'
 import { Skeleton } from '~/components/skeleton'
 
 import {

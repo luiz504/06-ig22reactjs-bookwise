@@ -7,7 +7,7 @@ import { api } from '~/lib/axios'
 
 import { buildQueryParams, queryParamToString } from '~/utils'
 
-import { Text } from '~/components/Text'
+import { Text } from '~/components/texts'
 import { Button } from '~/components/Button'
 import { CardBook } from './CardBook'
 import { CardAvaliation } from './CardAvaliation'

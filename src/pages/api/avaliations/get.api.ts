@@ -4,41 +4,39 @@ import { prisma } from '~/lib/prisma'
 
 import { NextAPIResponseError, nextApiBuilder } from '~/utils/apiHandlerUtils'
 
-type AvaliationWithBookAndUser = {
-  id: string
-  rate: number
-  description: string
-  created_at: Date
-  user: {
-    id: string
-    name: string
-    avatar_url: string | null
-  }
-  book: {
-    id: string
-    name: string
-    author: string
-    cover_url: string
-  }
-}
+import { AvaliationWithBookAndUser } from '~/types/AvaliationWithBookAndUser'
 
 export type GetAvaliationsResponse = {
   total_count: number
+  hasNextPage: boolean
   items: AvaliationWithBookAndUser[]
 }
 
-const getBookAvaliationsParamsSchema = z.object({
-  bookId: z.string(),
+const getAvaliationsParamsSchema = z.object({
+  per_page: z.number({ coerce: true }).int().min(1).max(30).optional(),
+  page: z.number({ coerce: true }).int().min(1).optional(),
 })
 
-export type GetBookAvaliationsParams = z.infer<
-  typeof getBookAvaliationsParamsSchema
->
+export type GetAvaliationsParams = z.infer<typeof getAvaliationsParamsSchema>
 
 const getAvaliationsHandler: NextApiHandler = async (
   req: NextApiRequest,
   res: NextApiResponse<GetAvaliationsResponse | NextAPIResponseError>,
 ) => {
+  const paramsResult = getAvaliationsParamsSchema.safeParse(req.query)
+
+  if (!paramsResult.success) {
+    const errorMessage = paramsResult.error.errors.map((err) => err.message)
+    return res.status(400).json({
+      message: 'Bad request',
+      errors: errorMessage,
+    })
+  }
+  const page = paramsResult.data.page || 1
+  const perPage = paramsResult.data.per_page || 10
+
+  const offset = (page - 1) * perPage
+
   try {
     const totalCountQuery = prisma.rating.count()
     const avaliationsQuery = prisma.rating.findMany({
@@ -63,14 +61,22 @@ const getAvaliationsHandler: NextApiHandler = async (
           },
         },
       },
+      orderBy: {
+        created_at: 'desc',
+      },
+      take: perPage,
+      skip: offset,
     })
 
     const [totalCount, avaliations] = await Promise.all([
       totalCountQuery,
       avaliationsQuery,
     ])
+    const hasNextPage = offset + perPage < totalCount
 
-    return res.status(200).json({ total_count: totalCount, items: avaliations })
+    return res
+      .status(200)
+      .json({ total_count: totalCount, items: avaliations, hasNextPage })
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }

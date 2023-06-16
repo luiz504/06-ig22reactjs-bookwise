@@ -1,6 +1,6 @@
 import { ProfileImage } from '~/components/ProfileImage'
 import { ActionsRow, Container, Header } from './styles'
-import { Heading } from '~/components/Heading'
+import { Heading } from '~/components/texts'
 import { Rating } from '~/components/Rating'
 import { TextArea } from '~/components/TextArea'
 import { Check, X } from 'phosphor-react'

@@ -1,37 +1,39 @@
-import { Star } from 'phosphor-react'
-import React, { useMemo } from 'react'
+import React from 'react'
 
-import { Container } from './styles'
+import { Container, Star } from './styles'
+import { CSS } from '@stitches/react'
 
 interface RatingProps {
   starsAmount?: number
   rating: number
   style?: React.CSSProperties
+  css?: CSS
 }
 
-export const Rating = ({ starsAmount = 5, rating, style }: RatingProps) => {
-  const stars = useMemo(() => {
-    if (starsAmount > 5) {
-      return Array.from({ length: 5 }, (_, index) => ({
-        weight: index + 1,
-      }))
-    }
-    return Array.from({ length: starsAmount }, (_, index) => ({
-      weight: index + 1,
-    }))
-  }, [starsAmount])
+export const Rating = ({ rating, css }: RatingProps) => {
+  const clampedRating = Math.max(0, Math.min(rating))
 
-  if (starsAmount < 1) {
-    return null
-  }
+  const stars = Array.from({ length: 5 }, (_, index) => {
+    const fillPercentage =
+      index < Math.floor(clampedRating)
+        ? 100
+        : index === Math.floor(clampedRating)
+        ? (clampedRating % 1) * 100
+        : 0
+    return {
+      weight: index + 1,
+      fillPercentage,
+    }
+  })
 
   return (
-    <Container style={style} className={'rating-container'}>
+    <Container
+      title={`Avaliação: ${rating}`}
+      className={'rating-container'}
+      css={css}
+    >
       {stars.map((star) => (
-        <Star
-          key={star.weight}
-          weight={star.weight > rating ? 'bold' : 'fill'}
-        />
+        <Star key={star.weight} fillPercentage={star.fillPercentage} />
       ))}
     </Container>
   )
