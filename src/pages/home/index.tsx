@@ -8,8 +8,7 @@ import iconRocket from '~/assets/rocket-icon.svg'
 import logoFull from '~/assets/logo-full.png'
 import previewImg from '~/assets/preview.png'
 
-import { Heading } from '~/components/Heading'
-import { Text } from '~/components/Text'
+import { Heading, Text } from '~/components/texts'
 
 import { BoxHero, Container, Hero, Preview, SignInOption } from './styles'
 

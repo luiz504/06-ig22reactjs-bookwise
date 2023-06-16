@@ -6,10 +6,10 @@ import { api } from '~/lib/axios'
 
 import { Sidebar } from '~/components/Sidebar'
 import { AsideRight } from '~/components/GridLayout'
-import { Heading } from '~/components/Heading'
-import { Text } from '~/components/Text'
+
 import { CardBookAvaliation } from './components/CardBookAvaliation'
 import { BooksSugestionAside } from './components/BooksSugestionAside'
+import { FeedbackText, Heading, Text } from '~/components/texts'
 
 import {
   Container,
@@ -22,7 +22,7 @@ import {
 import { GetAvaliationsResponse } from '../api/avaliations/get.api'
 
 export default function Start() {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['avaliations-recent'],
     queryFn: async () => {
       const { data } = await api.get<GetAvaliationsResponse>('/avaliations/get')
@@ -54,6 +54,12 @@ export default function Start() {
               {avaliations?.map((avaliation) => (
                 <CardBookAvaliation key={avaliation.id} data={avaliation} />
               ))}
+
+              {!isLoading && !avaliations?.length && (
+                <FeedbackText size="sm">
+                  Não foram encontradas avaliações.
+                </FeedbackText>
+              )}
             </SectionRecentAvaliations>
 
             <AsideRight>

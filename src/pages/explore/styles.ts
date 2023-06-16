@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { Box } from '~/components/Box'
-import { Heading } from '~/components/Heading'
-import { Text } from '~/components/Text'
-import { TextInput } from '~/components/TextInput'
 import { styled } from '~/styles'
+
+import { Box } from '~/components/Box'
+import { Heading, Text } from '~/components/texts'
+import { TextInput } from '~/components/TextInput'
 
 export const Container = styled('div', {
   background: '$gray800',
@@ -107,12 +107,4 @@ export const ItemInfoCol = styled('div', {
 
   display: 'flex',
   flexDirection: 'column',
-})
-
-export const FeedbackText = styled(Text, {
-  strong: {
-    fontStyle: 'italic',
-    color: '$purple100',
-    fontSize: '$md',
-  },
 })

@@ -10,9 +10,8 @@ import { api } from '~/lib/axios'
 import { buildQueryParams, queryParamToString } from '~/utils'
 
 import { Rating } from '~/components/Rating'
-import { Text } from '~/components/Text'
+import { Heading, Text, FeedbackText } from '~/components/texts'
 import { Sidebar } from '~/components/Sidebar'
-import { Heading } from '~/components/Heading'
 import { TextInput } from '~/components/TextInput'
 import { CommentModal } from './components/CommentModal'
 import { Skeleton } from '~/components/skeleton'
@@ -26,7 +25,6 @@ import {
   BooksGridList,
   ItemInfoCol,
   SugestionItem,
-  FeedbackText,
 } from './styles'
 
 import { GetCategoriesResponse } from '../api/categories/get.api'

@@ -1,5 +1,6 @@
 import { Box } from '~/components/Box'
-import { Text } from '~/components/Text'
+import { Text } from '~/components/texts'
+
 import { styled } from '~/styles'
 
 export const Container = styled(Box, {

@@ -1,5 +1,5 @@
 import { Rating } from '~/components/Rating'
-import { Text } from '~/components/Text'
+import { Text } from '~/components/texts'
 import { styled } from '~/styles'
 
 export const Container = styled('div', {

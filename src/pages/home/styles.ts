@@ -1,7 +1,7 @@
-import { Box } from '~/components/Box'
-import { Heading } from '~/components/Heading'
-import { Text } from '~/components/Text'
 import { styled } from '~/styles'
+
+import { Box } from '~/components/Box'
+import { Heading, Text } from '~/components/texts'
 
 export const Container = styled('div', {
   display: 'grid',

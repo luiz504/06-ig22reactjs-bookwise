@@ -1,4 +1,4 @@
-import { Heading } from '~/components/Heading'
+import { Heading } from '~/components/texts'
 import { Rating } from '~/components/Rating'
 import { TextArea } from '~/components/TextArea'
 import { styled } from '~/styles'

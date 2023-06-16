@@ -6,9 +6,9 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '~/lib/axios'
 
 import { Button } from '~/components/Button'
-import { Heading } from '~/components/Heading'
+import { Skeleton } from '~/components/skeleton'
+import { Heading, Text } from '~/components/texts'
 import { Rating } from '~/components/Rating'
-import { Text } from '~/components/Text'
 
 import {
   Container,
@@ -22,7 +22,6 @@ import {
   GetBooksByRelevanceParams,
   GetBooksByRelevanceResponse,
 } from '~/pages/api/books/getByRelevance.api'
-import { Skeleton } from '~/components/skeleton'
 
 export const BooksSugestionAside = () => {
   const queryBooksSuggestion = useQuery({

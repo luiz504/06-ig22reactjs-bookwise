@@ -1,8 +1,8 @@
+import { FC } from 'react'
 import Image from 'next/image'
 import { BookOpen, BookmarkSimple } from 'phosphor-react'
 
-import { Heading } from '~/components/Heading'
-import { Text } from '~/components/Text'
+import { Heading, Text } from '~/components/texts'
 import { Rating } from '~/components/Rating'
 
 import {
@@ -14,7 +14,6 @@ import {
 } from './styles'
 
 import { BookWithRate } from '~/types/BookWithRate'
-import { FC } from 'react'
 
 type CardBookProps = {
   book: BookWithRate

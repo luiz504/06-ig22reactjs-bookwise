@@ -1,10 +1,9 @@
 import { FC } from 'react'
 import Image from 'next/image'
 
-import { Text } from '~/components/Text'
+import { Heading, Text } from '~/components/texts'
 import { Rating } from '~/components/Rating'
 import { ProfileImage } from '~/components/ProfileImage'
-import { Heading } from '~/components/Heading'
 
 import {
   BookInfoRow,
