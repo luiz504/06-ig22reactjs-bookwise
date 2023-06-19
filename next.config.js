@@ -8,6 +8,8 @@ const nextConfig = {
       'images.unsplash.com',
       'http://localhost:3000',
       'public',
+      'avatars.githubusercontent.com',
+      'lh3.googleusercontent.com',
     ],
   },
 }

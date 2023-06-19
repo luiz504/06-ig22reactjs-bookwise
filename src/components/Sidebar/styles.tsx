@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { styled } from '~/styles'
-import { Text } from '../texts'
+import { Heading, Text } from '../texts'
 
 export const Container = styled('aside', {
   minHeight: 'fit-content',
@@ -90,9 +90,10 @@ export const Footer = styled('div', {
   zIndex: 1,
 })
 
-export const SignOutButton = styled('button', {
+export const ButtonSign = styled('button', {
   background: 'transparent',
   border: 0,
+  cursor: 'pointer',
 
   display: 'flex',
   alignItems: 'center',
@@ -100,15 +101,18 @@ export const SignOutButton = styled('button', {
   gap: '$3',
   padding: '$1',
   borderRadius: '$xs',
+  textDecoration: 'none',
 
-  img: {
-    borderRadius: '$full',
+  [`> ${Text}, ${Heading}`]: {
+    lineHeight: '$base',
+    color: '$gray200',
   },
 
-  svg: {
-    color: '#F75A68',
-    width: '$5',
-    height: '$5',
+  '> svg.sign-in': {
+    color: '$green100',
+  },
+  '> svg.sign-out': {
+    color: '$gray300',
   },
 
   '&:focus': {

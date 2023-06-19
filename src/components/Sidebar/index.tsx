@@ -1,22 +1,25 @@
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { Binoculars, ChartLineUp, SignOut, User } from 'phosphor-react'
+import { signOut, useSession } from 'next-auth/react'
+import { Binoculars, ChartLineUp, SignIn, SignOut, User } from 'phosphor-react'
 
 import logoFull from '~/assets/logo-full.png'
 
-import { Text } from '../texts/Text'
+import { Text, Heading } from '../texts'
+import { ProfileImage } from '../ProfileImage'
 
 import {
+  ButtonSign,
   Container,
   Footer,
   Header,
   NavItem,
   Navbar,
-  SignOutButton,
 } from './styles'
 
 export const Sidebar = () => {
-  const logged = true
+  const { data: session } = useSession()
+  const logged = !!session?.user
   const router = useRouter()
 
   return (
@@ -42,18 +45,28 @@ export const Sidebar = () => {
       </Navbar>
 
       <Footer>
-        <SignOutButton>
-          <Image
-            src={'https://github.com/luiz504.png'}
-            alt={'Logged User profile picture'}
-            height={32}
-            width={32}
-          />
+        {logged && (
+          <ButtonSign
+            onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
+          >
+            <ProfileImage
+              src={session.user.avatar_url || ''}
+              alt={'Logged User profile picture'}
+              size={32}
+            />
 
-          <Text> Luiz Bueno </Text>
+            <Text size={'sm'}>{session.user.name}</Text>
 
-          <SignOut weight="bold" />
-        </SignOutButton>
+            <SignOut className="sign-out" weight="bold" size={20} />
+          </ButtonSign>
+        )}
+        {!logged && (
+          <ButtonSign onClick={() => router.push('/')}>
+            <Heading size={'sm'}>Fazer login</Heading>
+
+            <SignIn className="sign-in" weight="bold" size={20} />
+          </ButtonSign>
+        )}
       </Footer>
     </Container>
   )
