@@ -93,7 +93,8 @@ export const SignInOption = styled(Box, {
     boxShadow: '0 0 0 2px $colors$purple100',
   },
 
-  [`> ${Text}`]: {
+  [`> ${Heading}`]: {
     color: '$gray200',
+    lineHeight: '$base',
   },
 })

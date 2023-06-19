@@ -53,19 +53,19 @@ export default function Home() {
               <SignInOption as="button" onClick={() => signIn('google')}>
                 <Image src={IconGoogle} alt="Google logo" />
 
-                <Text size="lg">Entrar com Google</Text>
+                <Heading>Entrar com Google</Heading>
               </SignInOption>
 
               <SignInOption as="button" onClick={() => signIn('github')}>
                 <Image src={IconGithub} alt="Github logo" />
 
-                <Text size="lg">Entrar com Github</Text>
+                <Heading>Entrar com Github</Heading>
               </SignInOption>
 
               <SignInOption as="button" onClick={() => router.push('/start')}>
                 <Image src={iconRocket} alt="Rocket icon" />
 
-                <Text size="lg">Acessar como visitante</Text>
+                <Heading>Acessar como visitante</Heading>
               </SignInOption>
             </section>
           </BoxHero>

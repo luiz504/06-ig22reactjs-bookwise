@@ -60,6 +60,7 @@ export const Sidebar = () => {
             <SignOut className="sign-out" weight="bold" size={20} />
           </ButtonSign>
         )}
+
         {!logged && (
           <ButtonSign onClick={() => router.push('/')}>
             <Heading size={'sm'}>Fazer login</Heading>
