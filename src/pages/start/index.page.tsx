@@ -4,13 +4,14 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { ChartLineUp } from 'phosphor-react'
 
 import { api } from '~/lib/axios'
+import { useIntersection } from '~/hooks/useIntersection'
 
 import { Sidebar } from '~/components/Sidebar'
 import { AsideRight } from '~/components/GridLayout'
-
 import { CardBookAvaliation } from './components/CardBookAvaliation'
 import { BooksSugestionAside } from './components/BooksSugestionAside'
 import { FeedbackText, Heading, Text } from '~/components/texts'
+import { CardBookAvaliationSkeleton } from './components/CardBookAvaliation/skeleton'
 
 import {
   Container,
@@ -24,8 +25,6 @@ import {
   GetAvaliationsParams,
   GetAvaliationsResponse,
 } from '../api/avaliations/get.api'
-import { CardBookAvaliationSkeleton } from './components/CardBookAvaliation/skeleton'
-import { useIntersection } from '~/hooks/useIntersection'
 
 export default function Start() {
   const { data, isLoading, fetchNextPage, isInitialLoading, hasNextPage } =

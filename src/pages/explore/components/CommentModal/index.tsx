@@ -33,6 +33,8 @@ import {
   GetBookByIdParams,
   GetBookByIdResponse,
 } from '~/pages/api/book/get.api'
+import { useSession } from 'next-auth/react'
+import { SignInModal } from '../SignInModal'
 
 type CommentModalProps = ComponentProps<typeof Root>
 
@@ -52,13 +54,6 @@ export const CommentModal = (props: CommentModalProps) => {
         search,
       }),
     })
-  }
-
-  const handleOpenAvaliator = () => {
-    const loggedIn = true
-    if (loggedIn) {
-      setIsOpenAvaliator(true)
-    }
   }
 
   const { data: bookData, isLoading: isLoadingBook } = useQuery({
@@ -99,39 +94,61 @@ export const CommentModal = (props: CommentModalProps) => {
     retry: false,
   })
 
+  const { data: session } = useSession()
+
+  const logged = !!session
+
+  const [isOpenModalSignIn, setIsOpenModalSignIn] = useState(false)
+
+  const handleOpenAvaliator = () => {
+    if (logged) {
+      setIsOpenAvaliator(true)
+      return
+    }
+    setIsOpenModalSignIn(true)
+  }
+
   return (
-    <Root {...props}>
-      <Portal>
-        <Overlay />
-        <Content>
-          <CloseBtn>
-            <X weight="bold" size={15} />
-          </CloseBtn>
+    <>
+      <Root {...props}>
+        <Portal>
+          <Overlay />
+          <Content>
+            <CloseBtn>
+              <X weight="bold" size={15} />
+            </CloseBtn>
 
-          {isLoadingBook && <CardBookSkeleton />}
-          {!isLoadingBook && !!bookData && <CardBook book={bookData} />}
+            {isLoadingBook && <CardBookSkeleton />}
+            {!isLoadingBook && !!bookData && <CardBook book={bookData} />}
 
-          <AvaliationsSection>
-            <AvaliationLabelAndActions>
-              <Text size={'sm'}>Avaliações</Text>
+            <AvaliationsSection>
+              <AvaliationLabelAndActions>
+                <Text size={'sm'}>Avaliações</Text>
 
-              {!isOpenAvaliator && (
-                <Button variant={'secondary'} onClick={handleOpenAvaliator}>
-                  Avaliar
-                </Button>
-              )}
-            </AvaliationLabelAndActions>
+                {!isOpenAvaliator && (
+                  <Button variant={'secondary'} onClick={handleOpenAvaliator}>
+                    Avaliar
+                  </Button>
+                )}
+              </AvaliationLabelAndActions>
 
-            <AvaliationsList>
-              {isOpenAvaliator && <CardAvaliator />}
+              <AvaliationsList>
+                {isOpenAvaliator && <CardAvaliator />}
 
-              {bookAvaliationsData?.map((aval) => (
-                <CardAvaliation key={aval.id} avaliation={aval} />
-              ))}
-            </AvaliationsList>
-          </AvaliationsSection>
-        </Content>
-      </Portal>
-    </Root>
+                {bookAvaliationsData?.map((aval) => (
+                  <CardAvaliation key={aval.id} avaliation={aval} />
+                ))}
+              </AvaliationsList>
+            </AvaliationsSection>
+          </Content>
+        </Portal>
+      </Root>
+      {isOpenModalSignIn && (
+        <SignInModal
+          open={isOpenModalSignIn}
+          onOpenChange={(v) => setIsOpenModalSignIn(v)}
+        />
+      )}
+    </>
   )
 }

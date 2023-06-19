@@ -11,11 +11,18 @@ export const Container = styled('div', {
   '.placeholder': {
     overflow: 'hidden',
     borderRadius: 'inherit',
-  },
+    display: 'grid',
 
-  img: {
-    borderRadius: '$full',
-    objectFit: 'contain',
+    img: {
+      borderRadius: '$full',
+      objectFit: 'cover',
+    },
+    svg: {
+      color: '$gray800',
+
+      alignSelf: 'center',
+      justifySelf: 'center',
+    },
   },
 
   variants: {
@@ -27,6 +34,11 @@ export const Container = styled('div', {
         '.placeholder': {
           width: 30,
           height: 30,
+
+          svg: {
+            width: 24,
+            height: 24,
+          },
         },
       },
       40: {
@@ -35,6 +47,11 @@ export const Container = styled('div', {
         '.placeholder': {
           width: 38,
           height: 38,
+
+          svg: {
+            width: 30,
+            height: 30,
+          },
         },
       },
     },

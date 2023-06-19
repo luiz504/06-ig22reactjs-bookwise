@@ -13,6 +13,8 @@ export const colors = {
   green200: '#255D6A',
   green300: '#0A313C',
 
+  red300: '#F75A68',
+
   purple100: '#8381D9',
   purple200: '#2A2879',
 
