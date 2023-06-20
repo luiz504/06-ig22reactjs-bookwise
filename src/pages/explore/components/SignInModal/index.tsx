@@ -1,6 +1,5 @@
 import React, { ComponentProps, FC } from 'react'
 import { signIn } from 'next-auth/react'
-import Image from 'next/image'
 import { X } from 'phosphor-react'
 
 import IconGoogle from '~/assets/google-icon.svg'
@@ -36,7 +35,7 @@ export const SignInModal: FC<SignInModalProps> = (props) => {
               as="button"
               onClick={() => signIn('google', { redirect: false })}
             >
-              <Image src={IconGoogle} alt="Google logo" />
+              <IconGoogle />
 
               <Heading>Entrar com Google</Heading>
             </SignInOption>
@@ -45,7 +44,7 @@ export const SignInModal: FC<SignInModalProps> = (props) => {
               as="button"
               onClick={() => signIn('github', { redirect: false })}
             >
-              <Image src={IconGithub} alt="Github logo" />
+              <IconGithub />
 
               <Heading>Entrar com Github</Heading>
             </SignInOption>

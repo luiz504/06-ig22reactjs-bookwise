@@ -1,5 +1,7 @@
 import React, { forwardRef } from 'react'
 
+import { Skeleton } from '~/components/Skeleton'
+
 import {
   Container,
   Header,
@@ -7,7 +9,6 @@ import {
   BookInfoRow,
   BookInfoSection,
 } from './styles'
-import { Skeleton } from '~/components/skeleton'
 
 export const CardBookAvaliationSkeleton = forwardRef<HTMLDivElement>(
   (_, ref) => {

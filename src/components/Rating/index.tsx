@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Container, Star } from './styles'
+import { Container } from './styles'
 import { CSS } from '@stitches/react'
+import { Star } from '../Star'
 
 interface RatingProps {
   starsAmount?: number

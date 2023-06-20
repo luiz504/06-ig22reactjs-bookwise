@@ -14,7 +14,7 @@ import { Heading, Text, FeedbackText } from '~/components/texts'
 import { Sidebar } from '~/components/Sidebar'
 import { TextInput } from '~/components/TextInput'
 import { CommentModal } from './components/CommentModal'
-import { Skeleton } from '~/components/skeleton'
+import { Skeleton } from '~/components/Skeleton'
 
 import {
   Container,

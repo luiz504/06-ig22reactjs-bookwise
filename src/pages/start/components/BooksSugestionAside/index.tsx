@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '~/lib/axios'
 
 import { Button } from '~/components/Button'
-import { Skeleton } from '~/components/skeleton'
+import { Skeleton } from '~/components/Skeleton'
 import { Heading, Text } from '~/components/texts'
 import { Rating } from '~/components/Rating'
 

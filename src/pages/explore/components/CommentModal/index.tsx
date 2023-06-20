@@ -133,7 +133,11 @@ export const CommentModal = (props: CommentModalProps) => {
               </AvaliationLabelAndActions>
 
               <AvaliationsList>
-                {isOpenAvaliator && <CardAvaliator />}
+                {isOpenAvaliator && (
+                  <CardAvaliator
+                    onCancelAvaliation={() => setIsOpenAvaliator(false)}
+                  />
+                )}
 
                 {bookAvaliationsData?.map((aval) => (
                   <CardAvaliation key={aval.id} avaliation={aval} />

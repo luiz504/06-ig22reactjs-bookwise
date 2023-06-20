@@ -1,7 +1,7 @@
 import { Heading } from '~/components/texts'
-import { Rating } from '~/components/Rating'
 import { TextArea } from '~/components/TextArea'
 import { styled } from '~/styles'
+import { RateAvaliator } from './RateAvaliator'
 
 export const Container = styled('form', {
   padding: '$6',
@@ -23,7 +23,7 @@ export const Header = styled('div', {
     lineHeight: '$short',
   },
 
-  [`> ${Rating}`]: {
+  [`> ${RateAvaliator}`]: {
     marginLeft: 'auto',
   },
 })
