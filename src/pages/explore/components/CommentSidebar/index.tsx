@@ -1,18 +1,18 @@
-import { ComponentProps, Fragment, useEffect, useRef, useState } from 'react'
+import { ComponentProps, Fragment, useRef } from 'react'
 import { X } from 'phosphor-react'
-import { useRouter } from 'next/router'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 
-import { api } from '~/lib/axios'
-
-import { buildQueryParams, queryParamToString } from '~/utils'
+import { useSkeletonListGenerator } from '~/hooks/useSkeletonListGenetator'
+import { onPointerDownOutside } from '~/utils/onPointerDownOutside'
 
 import { Text } from '~/components/texts'
 import { Button } from '~/components/Button'
-import { CardBook, CardBookSkeleton } from './CardBook'
-import { CardAvaliation, CardAvaliationSkeleton } from './CardAvaliation'
-
-import { CardAvaliator } from './CardAvaliator'
+import { CardBook, CardBookSkeleton } from './components/CardBook'
+import {
+  CardAvaliation,
+  CardAvaliationSkeleton,
+} from './components/CardAvaliation'
+import { CardAvaliator } from './components/CardAvaliator'
+import { SignInModal } from '../SignInModal'
 
 import {
   Root,
@@ -26,139 +26,47 @@ import {
 } from './styles'
 
 import {
-  GetBookAvaliationsParams,
-  GetBookAvaliationsResponse,
-} from '~/pages/api/book/avaliations/get.api'
-import {
-  GetBookByIdParams,
-  GetBookByIdResponse,
-} from '~/pages/api/book/get.api'
-import { useSession } from 'next-auth/react'
-import { SignInModal } from '../SignInModal'
-import { useIntersection } from '~/hooks/useIntersection'
-import { onPointerDownOutside } from '~/utils/onPointerDownOutside'
+  useAvaliationsController,
+  useBookController,
+  useComponentsController,
+} from './controllers'
 
 type CommentSidebarProps = ComponentProps<typeof Root>
 
 export const CommentSidebar = (props: CommentSidebarProps) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const [isOpenAvaliator, setIsOpenAvaliator] = useState(false)
-  const router = useRouter()
+  const {
+    loggedUserId,
+    isOpenModalSignIn,
+    handleCloseSignInModal,
+    isOpenAvaliator,
+    handleOpenAvaliator,
+    handleCloseAvaliator,
+  } = useComponentsController()
 
-  const category = queryParamToString(router.query.category)
-  const search = queryParamToString(router.query.search)
-  const bookOpenId = queryParamToString(router.query.bookOpenId)
-
-  const redirect = () => {
-    router.push({
-      pathname: '/explore',
-      query: buildQueryParams({
-        category,
-        search,
-      }),
-    })
-  }
+  const { bookData, isLoadingBook, bookId, refetchBook } = useBookController()
 
   const {
-    data: bookData,
-    isLoading: isLoadingBook,
-    refetch: refetchBook,
-  } = useQuery({
-    queryKey: ['book-data', { bookOpenId }],
-    queryFn: async () => {
-      if (!bookOpenId) return undefined
-      const params: GetBookByIdParams = { bookId: bookOpenId }
-      try {
-        const { data } = await api.get<GetBookByIdResponse>('/book/get', {
-          params,
-        })
-        return data
-      } catch (err) {
-        redirect()
-        throw err
-      }
-    },
-    retry: false,
-    enabled: !!bookOpenId,
+    userAvaliation,
+    avaliationPages,
+    isLoadingAvaliations,
+    hasNextAvaliationsPage,
+    refetchAvaliations,
+    loadMoreRef,
+  } = useAvaliationsController({
+    bookId,
+    loggedUserId,
   })
-
-  const bookId = bookData?.id
-
-  const { data: session } = useSession()
-
-  const logged = !!session
-  const loggedUserId = session?.user.id
-
-  const [isOpenModalSignIn, setIsOpenModalSignIn] = useState(false)
-
-  const handleOpenAvaliator = () => {
-    if (logged) {
-      setIsOpenAvaliator(true)
-      return
-    }
-    setIsOpenModalSignIn(true)
-  }
-
-  const {
-    data: bookAvaliations,
-    isLoading: isLoadingAvaliations,
-    refetch,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery({
-    queryKey: ['book-avaliations', { bookId, loggedUserId }],
-    queryFn: async ({ pageParam }) => {
-      if (!bookId) return
-      const params: GetBookAvaliationsParams = {
-        bookId,
-        rating_user_id: loggedUserId,
-        page: pageParam,
-        per_page: 5,
-      }
-      const { data } = await api.get<GetBookAvaliationsResponse>(
-        '/book/avaliations/get',
-        { params },
-      )
-      return data
-    },
-    enabled: !!bookId,
-    retry: false,
-    getNextPageParam: (lastPage, pages) => {
-      if (lastPage?.hasNextPage) {
-        return pages.length + 1
-      }
-      return undefined
-    },
-  })
-
-  const loadMoreSkeletonRef = useRef<HTMLDivElement>(null)
-
-  const { ref, entry } = useIntersection({
-    root: loadMoreSkeletonRef.current,
-    threshold: 1,
-  })
-
-  useEffect(() => {
-    if (entry?.isIntersecting && !isLoadingAvaliations) {
-      fetchNextPage()
-    }
-  }, [entry, isLoadingAvaliations, fetchNextPage])
-
-  const userAvaliation = bookAvaliations?.pages?.[0]?.user_item
-
-  const avaliationPages = bookAvaliations?.pages
 
   const showBtnCreateAvaliation =
     !isLoadingAvaliations && bookId && !userAvaliation && !isOpenAvaliator
 
-  const avalationsSkeletonList = Array.from({ length: 3 }, (_, i) => ({
-    id: i,
-  }))
+  const avalationsSkeletonList = useSkeletonListGenerator(3)
 
   function onSuccessCreateAvaliation() {
     refetchBook()
-    refetch()
+    refetchAvaliations()
   }
 
   return (
@@ -198,7 +106,7 @@ export const CommentSidebar = (props: CommentSidebarProps) => {
                 {isOpenAvaliator && !!bookId && (
                   <CardAvaliator
                     bookId={bookId}
-                    onClose={() => setIsOpenAvaliator(false)}
+                    onClose={handleCloseAvaliator}
                     onSuccess={onSuccessCreateAvaliation}
                   />
                 )}
@@ -215,7 +123,9 @@ export const CommentSidebar = (props: CommentSidebarProps) => {
                   </Fragment>
                 ))}
 
-                {hasNextPage && <CardAvaliationSkeleton ref={ref} />}
+                {hasNextAvaliationsPage && (
+                  <CardAvaliationSkeleton ref={loadMoreRef} />
+                )}
               </AvaliationsList>
             </AvaliationsSection>
           </Content>
@@ -225,7 +135,7 @@ export const CommentSidebar = (props: CommentSidebarProps) => {
       {isOpenModalSignIn && (
         <SignInModal
           open={isOpenModalSignIn}
-          onOpenChange={(v) => setIsOpenModalSignIn(v)}
+          onOpenChange={handleCloseSignInModal}
         />
       )}
     </>

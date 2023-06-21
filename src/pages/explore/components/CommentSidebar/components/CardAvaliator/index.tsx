@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -40,10 +41,8 @@ export const CardAvaliator: FC<CardAvaliatorProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const user = {
-    avatar_url: 'https://github.com/luiz504.png',
-    name: 'Luiz Bueno',
-  }
+  const { data: session } = useSession()
+  const user = session?.user
 
   const {
     register,
@@ -88,13 +87,18 @@ export const CardAvaliator: FC<CardAvaliatorProps> = ({
     }
   }
 
+  if (!user) return null
+
   return (
     <>
       <Container
         onSubmit={handleSubmit((onValid) => onSubmit(onValid, 'form'))}
       >
         <Header>
-          <ProfileImage src={user.avatar_url} alt="User Avatar Profile Image" />
+          <ProfileImage
+            src={user.avatar_url || ''}
+            alt="User Avatar Profile Image"
+          />
           <Heading size="sm">{user.name}</Heading>
           <Controller
             name="rate"
