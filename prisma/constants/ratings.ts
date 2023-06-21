@@ -1,5 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
+import { users } from './users'
 
+import { Rating } from '@prisma/client'
+const RATE_OPTIONS = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] as const
 export const ratings = [
   {
     id: uuidv4(),
@@ -54,13 +57,6 @@ export const ratings = [
       'Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectus leo. Sit porta eget nec vitae sit vulputate eget',
     book_id: 'c8176d86-896a-4c21-9219-6bb28cccaa5f',
     user_id: '48e458c0-8b1e-4994-b85a-1e1cfcc9dd60',
-  },
-  {
-    id: uuidv4(),
-    rate: 4,
-    description: 'Nec tempor nunc in egestas.',
-    book_id: '0440ad7d-230e-4573-b455-84ca38b5d339',
-    user_id: 'c296c6c0-5c59-40dd-aa8a-ef2b015b7502',
   },
   {
     id: uuidv4(),
@@ -124,4 +120,23 @@ export const ratings = [
     book_id: '66cb0f47-7e20-4492-b640-9c020fcae6f2',
     user_id: '48e458c0-8b1e-4994-b85a-1e1cfcc9dd60',
   },
+  ...ratingsGenerator('0440ad7d-230e-4573-b455-84ca38b5d339'),
 ]
+
+function ratingsGenerator(bookId: string) {
+  const usersIds = users.flatMap((user) => user.id)
+
+  const ratings: Omit<Rating, 'created_at'>[] = []
+
+  usersIds.forEach((userId) => {
+    ratings.push({
+      id: uuidv4(),
+      user_id: userId,
+      book_id: bookId,
+      rate: RATE_OPTIONS[Math.floor(Math.random() * RATE_OPTIONS.length)],
+      description:
+        'Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectus leo. Sit porta eget nec vitae sit vulputate eget',
+    })
+  })
+  return ratings
+}

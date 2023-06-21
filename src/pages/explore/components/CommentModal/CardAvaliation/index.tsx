@@ -42,3 +42,5 @@ export const CardAvaliation: FC<CardAvaliationProps> = ({ avaliation }) => {
     </Container>
   )
 }
+
+export { CardAvaliationSkeleton } from './skeleton'

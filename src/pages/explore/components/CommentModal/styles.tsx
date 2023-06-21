@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 
-import { keyframes, styled } from '~/styles'
+import { keyframes, scrollbarThin, styled } from '~/styles'
 
 export const Root = Dialog.Root
 
@@ -36,6 +36,9 @@ export const Content = styled(Dialog.Content, {
   display: 'flex',
   flexDirection: 'column',
   padding: '$6 $12',
+
+  overflowY: 'auto',
+  ...scrollbarThin,
 })
 
 export const CloseBtn = styled(Dialog.Close, {

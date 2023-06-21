@@ -21,7 +21,7 @@ export const globalStyles = globalCss({
   },
 
   html: {
-    scrollbarGutter: 'stable',
+    overflowY: 'visible',
     ...scrollbarThin,
   },
 })

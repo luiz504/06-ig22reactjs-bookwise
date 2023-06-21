@@ -62,3 +62,5 @@ export const CardBook: FC<CardBookProps> = ({ book }) => {
     </CardBookContainer>
   )
 }
+
+export { CardBookSkeleton } from './skeleton'

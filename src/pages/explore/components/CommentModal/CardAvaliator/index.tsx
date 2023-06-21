@@ -13,6 +13,9 @@ import { RATE_OPTIONS, RateOption, RateAvaliator } from './RateAvaliator'
 
 import { ActionsRow, Container, Header } from './styles'
 
+import { api } from '~/lib/axios'
+import { PostAvaliationBody } from '~/pages/api/book/avaliations/post.api'
+
 const avaliationFormSchema = z.object({
   rate: z
     .number()
@@ -27,11 +30,15 @@ const avaliationFormSchema = z.object({
 type AvaliationFormType = z.infer<typeof avaliationFormSchema>
 
 type CardAvaliatorProps = {
-  onCancelAvaliation: () => void
+  bookId: string
+  onClose: () => void
+  onSuccess?: () => void
 }
 
 export const CardAvaliator: FC<CardAvaliatorProps> = ({
-  onCancelAvaliation,
+  bookId,
+  onClose,
+  onSuccess,
 }) => {
   const user = {
     avatar_url: 'https://github.com/luiz504.png',
@@ -67,10 +74,18 @@ export const CardAvaliator: FC<CardAvaliatorProps> = ({
       setConfirmRateDialogOpen(true)
       return
     }
-    const sleep = (time = 5000) =>
-      new Promise((resolve, reject) => setTimeout(() => resolve('ff'), time))
-
-    await sleep()
+    const body: PostAvaliationBody = {
+      book_id: bookId,
+      rate: data.rate,
+      description: data.description,
+    }
+    try {
+      await api.post('/book/avaliations/post', body)
+      onClose()
+      onSuccess?.()
+    } catch (err) {
+      // console.error('err', err) //eslint-disable-line
+    }
   }
 
   return (
@@ -115,7 +130,7 @@ export const CardAvaliator: FC<CardAvaliatorProps> = ({
             variant={'terceary'}
             disabled={isSubmitting}
             loading={isSubmitting}
-            onClick={onCancelAvaliation}
+            onClick={onClose}
           >
             <X size="24" className="icon-x" />
           </Button>
