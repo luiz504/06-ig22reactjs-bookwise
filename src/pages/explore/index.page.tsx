@@ -13,7 +13,7 @@ import { Rating } from '~/components/Rating'
 import { Heading, Text, FeedbackText } from '~/components/texts'
 import { Sidebar } from '~/components/Sidebar'
 import { TextInput } from '~/components/TextInput'
-import { CommentModal } from './components/CommentModal'
+import { CommentSidebar } from './components/CommentSidebar'
 import { Skeleton } from '~/components/Skeleton'
 
 import {
@@ -237,7 +237,10 @@ export default function Explore() {
       </Container>
 
       {isOpenBookModal && (
-        <CommentModal open={isOpenBookModal} onOpenChange={handleCloseModal} />
+        <CommentSidebar
+          open={isOpenBookModal}
+          onOpenChange={handleCloseModal}
+        />
       )}
     </>
   )

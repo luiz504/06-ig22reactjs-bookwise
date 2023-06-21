@@ -38,9 +38,9 @@ import { SignInModal } from '../SignInModal'
 import { useIntersection } from '~/hooks/useIntersection'
 import { onPointerDownOutside } from '~/utils/onPointerDownOutside'
 
-type CommentModalProps = ComponentProps<typeof Root>
+type CommentSidebarProps = ComponentProps<typeof Root>
 
-export const CommentModal = (props: CommentModalProps) => {
+export const CommentSidebar = (props: CommentSidebarProps) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const [isOpenAvaliator, setIsOpenAvaliator] = useState(false)
