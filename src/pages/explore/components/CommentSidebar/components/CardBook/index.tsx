@@ -36,9 +36,9 @@ export const CardBook: FC<CardBookProps> = ({ book }) => {
           <Text>{book.author}</Text>
 
           <div className="rating-row">
-            <Rating rating={book.rate} />
+            <Rating rating={book.rate_average} />
 
-            <Text size="sm">{book.ratings.length} avaliacoes</Text>
+            <Text size="sm">{book.ratings_count} avaliacoes</Text>
           </div>
         </MainInfoCol>
       </MainInfoRow>

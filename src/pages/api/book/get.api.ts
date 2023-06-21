@@ -35,20 +35,32 @@ const getBookByIdHandler: NextApiHandler<
   } = params
 
   try {
-    const book = await prisma.book.findFirstOrThrow({
-      where: { id: bookId },
-      include: {
-        ratings: true,
-      },
-    })
-    const bookWithRate: BookWithRate = {
-      ...book,
-      rate: book.ratings.reduce((acc, cur) => acc + cur.rate, 0),
+    const bookWithRate = await prisma.$queryRaw<BookWithRate[]>`
+      SELECT 
+        books.id,
+        books.name,
+        books.author,
+        books.summary,
+        books.cover_url,
+        books.total_pages,
+        books.created_at,
+        IFNULL(AVG(ratings.rate), 0) AS rate_average,
+        CAST(COUNT(ratings.id) AS REAL) AS ratings_count
+      FROM 
+        books
+      LEFT JOIN
+        ratings ON books.id = ratings.book_id
+      WHERE 
+        books.id = ${bookId}
+      LIMIT 1
+    `
+    if (!bookWithRate.length) {
+      return res.status(404).json({ message: 'Book not found' })
     }
 
-    return res.status(200).json(bookWithRate)
+    return res.status(200).json(bookWithRate[0])
   } catch (err) {
-    return res.status(404).json({ message: 'Book not found' })
+    return res.status(500).json({ message: 'Internal Server Error' })
   }
 }
 

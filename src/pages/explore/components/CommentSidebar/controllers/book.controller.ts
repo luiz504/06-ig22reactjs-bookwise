@@ -37,6 +37,7 @@ export const useBookController = () => {
         const { data } = await api.get<GetBookByIdResponse>('/book/get', {
           params,
         })
+
         return data
       } catch (err) {
         redirect()
