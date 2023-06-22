@@ -38,7 +38,6 @@ export const useAvaliationsController = ({
         if (lastPage?.hasNextPage) {
           return pages.length + 1
         }
-        return undefined
       },
     })
 

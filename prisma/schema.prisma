@@ -52,16 +52,18 @@ model Session {
 }
 
 model Book {
-  id          String   @id @default(uuid())
-  name        String
-  author      String
-  summary     String
-  cover_url   String
-  total_pages Int
-  created_at  DateTime @default(now())
+  id              String   @id @default(uuid())
+  name            String
+  author          String
+  summary         String
+  cover_url       String
+  total_pages     Int
+  created_at      DateTime @default(now())
+  ratings_count   Int      @default(0)
+  ratings_average Float    @default(0)
 
-  catergories CategoriesOnBooks[]
-  ratings     Rating[]
+  categories CategoriesOnBooks[]
+  ratings    Rating[]
 
   @@map("books")
 }

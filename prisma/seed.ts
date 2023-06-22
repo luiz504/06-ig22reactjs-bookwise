@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { Book, PrismaClient } from '@prisma/client'
 import { books } from './constants/books'
 import { categories } from './constants/categories'
 import { ratings } from './constants/ratings'
@@ -41,7 +41,7 @@ async function main() {
         summary: book.summary,
         cover_url: book.cover_url,
         total_pages: book.total_pages,
-        catergories: {
+        categories: {
           create: [
             ...book.categories.map((category) => {
               return {
@@ -80,6 +80,37 @@ async function main() {
     ...usersSeed,
     ...ratingsSeed,
   ])
+
+  const booksToUpdate = await prisma.$queryRaw<Book[]>`
+    SELECT
+      b.id,
+      b.name,
+      b.author,
+      b.summary,
+      b.cover_url,
+      b.total_pages, 
+      b.created_at,
+      CAST(COUNT(r.id) AS REAL) AS ratings_count,
+      ROUND(COALESCE(AVG(r.rate), 0), 2) AS ratings_average
+    FROM 
+      books b
+    LEFT JOIN 
+      ratings r ON b.id = r.book_id
+    GROUP BY
+      b.id    
+  `
+
+  for (const book of booksToUpdate) {
+    const { ratings_average, ratings_count } = book
+
+    await prisma.book.update({
+      where: { id: book.id },
+      data: {
+        ratings_count,
+        ratings_average,
+      },
+    })
+  }
 }
 
 main()

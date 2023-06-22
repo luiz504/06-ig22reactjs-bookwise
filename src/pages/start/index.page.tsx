@@ -45,7 +45,6 @@ export default function Start() {
         if (lastPage.hasNextPage) {
           return pages.length + 1
         }
-        return undefined
       },
     })
 
