@@ -5,6 +5,7 @@ import { ChartLineUp } from 'phosphor-react'
 
 import { api } from '~/lib/axios'
 import { useIntersection } from '~/hooks/useIntersection'
+import { useSkeletonListGenerator } from '~/hooks/useSkeletonListGenetator'
 
 import { Sidebar } from '~/components/Sidebar'
 import { AsideRight } from '~/components/GridLayout'
@@ -48,7 +49,7 @@ export default function Start() {
       },
     })
 
-  const skeletonList = Array.from({ length: 3 }, (_, i) => ({ id: i }))
+  const skeletonList = useSkeletonListGenerator(3)
 
   const pages = data?.pages
 

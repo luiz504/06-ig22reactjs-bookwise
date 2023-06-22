@@ -148,7 +148,10 @@ export default function Explore() {
                           <Heading size="sm">{book.name}</Heading>
                           <Text size="sm">{book.author}</Text>
 
-                          <Rating rating={book.ratings_average} />
+                          <Rating
+                            rating={book.ratings_average}
+                            type="average"
+                          />
                         </ItemInfoCol>
                       </SugestionItem>
                     ))}
