@@ -2,11 +2,11 @@ import { NextApiHandler } from 'next'
 import { z } from 'zod'
 
 import { prisma } from '~/lib/prisma'
+import { BooksWithCategoriesName } from '~/types/BooksWithCategoriesName'
 
-import { BookWithRate } from '~/types/BookWithRate'
 import { nextApiBuilder, NextAPIResponseError } from '~/utils/apiHandlerUtils'
 
-export type GetBookByIdResponse = BookWithRate
+export type GetBookByIdResponse = BooksWithCategoriesName
 
 const getBookByIdParamsSchema = z.object({
   bookId: z.string({
@@ -35,30 +35,31 @@ const getBookByIdHandler: NextApiHandler<
   } = params
 
   try {
-    const bookWithRate = await prisma.$queryRaw<BookWithRate[]>`
-      SELECT 
-        books.id,
-        books.name,
-        books.author,
-        books.summary,
-        books.cover_url,
-        books.total_pages,
-        books.created_at,
-        IFNULL(AVG(ratings.rate), 0) AS rate_average,
-        CAST(COUNT(ratings.id) AS REAL) AS ratings_count
-      FROM 
-        books
-      LEFT JOIN
-        ratings ON books.id = ratings.book_id
-      WHERE 
-        books.id = ${bookId}
-      LIMIT 1
-    `
-    if (!bookWithRate.length) {
+    const book = await prisma.book.findUnique({
+      where: { id: bookId },
+      include: {
+        categories: {
+          select: {
+            category: true,
+          },
+        },
+      },
+    })
+
+    if (!book) {
       return res.status(404).json({ message: 'Book not found' })
     }
 
-    return res.status(200).json(bookWithRate[0])
+    const categoriesParser = book.categories.flatMap(
+      (item) => item.category.name,
+    )
+
+    const bookWithCategoriesName: BooksWithCategoriesName = {
+      ...book,
+      categories: categoriesParser,
+    }
+
+    return res.status(200).json(bookWithCategoriesName)
   } catch (err) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
