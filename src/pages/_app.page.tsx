@@ -4,6 +4,7 @@ import { Nunito } from 'next/font/google'
 import { SessionProvider } from 'next-auth/react'
 import { DefaultSeo } from 'next-seo'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import '~/lib/dayjs'
 import { queryClient } from '~/lib/queryClient'
@@ -32,6 +33,7 @@ export default function App({
       </Head>
       <div className={`${nunito.className}`}>
         <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
           <Component {...pageProps} />
         </QueryClientProvider>
       </div>

@@ -1,16 +1,18 @@
 import React from 'react'
 
-import { Container, Star } from './styles'
+import { Container } from './styles'
 import { CSS } from '@stitches/react'
+import { Star } from '../Star'
 
 interface RatingProps {
   starsAmount?: number
   rating: number
   style?: React.CSSProperties
   css?: CSS
+  type?: 'average' | 'unique'
 }
 
-export const Rating = ({ rating, css }: RatingProps) => {
+export const Rating = ({ rating, css, type = 'unique' }: RatingProps) => {
   const clampedRating = Math.max(0, Math.min(rating))
 
   const stars = Array.from({ length: 5 }, (_, index) => {
@@ -28,7 +30,11 @@ export const Rating = ({ rating, css }: RatingProps) => {
 
   return (
     <Container
-      title={`Avaliação: ${rating}`}
+      title={
+        type === 'unique'
+          ? `Avaliação: ${rating}`
+          : `Avaliação Média: ${rating}`
+      }
       className={'rating-container'}
       css={css}
     >

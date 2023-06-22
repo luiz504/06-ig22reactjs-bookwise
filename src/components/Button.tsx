@@ -15,14 +15,16 @@ export const Button = styled('button', {
   '&:focus': {
     boxShadow: '0 0 0 2px $colors$gray200',
   },
-
+  '&:disabled': {
+    cursor: 'not-allowed',
+  },
   variants: {
     variant: {
       primary: {
         backgroundColor: 'transparent',
         color: '$gray200',
 
-        '&:hover': {
+        '&:not(:disabled):hover': {
           backgroundColor: '$lightGrayTrans04',
           transition: 'background 150ms',
         },
@@ -31,7 +33,7 @@ export const Button = styled('button', {
         backgroundColor: 'transparent',
         color: '$purple100',
 
-        '&:hover': {
+        '&:not(:disabled):hover': {
           backgroundColor: '$purpleTrans06',
           transition: 'background 150ms',
         },
@@ -40,7 +42,7 @@ export const Button = styled('button', {
         backgroundColor: '$gray600',
         color: '$purple100',
 
-        '&:hover': {
+        '&:not(:disabled):hover': {
           backgroundColor: '$gray500',
           transition: 'background 150ms',
         },
@@ -58,6 +60,13 @@ export const Button = styled('button', {
       lg: {
         gap: '$6',
         padding: '$2',
+      },
+    },
+    loading: {
+      true: {
+        '&:disabled': {
+          cursor: 'progress',
+        },
       },
     },
   },

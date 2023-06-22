@@ -1,15 +1,21 @@
+import { Book } from '@prisma/client'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { z } from 'zod'
 import { prisma } from '~/lib/prisma'
 
-import { BookWithRate } from '~/types/BookWithRate'
 import { NextAPIResponseError, nextApiBuilder } from '~/utils/apiHandlerUtils'
 
-export type GetBooksResponse = BookWithRate[]
+export type GetBooksResponse = {
+  items: Book[]
+  total_count: number
+  hasNextPage: boolean
+}
 
 const getBooksParamsSchema = z.object({
   category: z.string().optional(),
   search: z.string().optional(),
+  per_page: z.number({ coerce: true }).int().min(1).max(30).optional(),
+  page: z.number({ coerce: true }).int().min(1).optional(),
 })
 
 export type GetBooksParams = z.infer<typeof getBooksParamsSchema>
@@ -52,10 +58,28 @@ const getBooksHandler: NextApiHandler = async (
       }
     : {}
 
+  const page = paramsResult.data.page || 1
+  const perPage = paramsResult.data.per_page || 10
+
+  const offset = (page - 1) * perPage
+
   try {
-    const books = await prisma.book.findMany({
+    const totalCountPromise = prisma.book.count({
       where: {
-        catergories: {
+        categories: {
+          some: {
+            category: {
+              name: category,
+            },
+          },
+        },
+        ...searchCriteria,
+      },
+    })
+
+    const booksPromise = prisma.book.findMany({
+      where: {
+        categories: {
           some: {
             category: {
               name: category,
@@ -65,15 +89,20 @@ const getBooksHandler: NextApiHandler = async (
         ...searchCriteria,
       },
 
-      include: { ratings: true },
+      take: perPage,
+      skip: offset,
     })
 
-    const booksWithRate = books.map((book) => ({
-      ...book,
-      rate: book.ratings.reduce((acc, cur) => acc + cur.rate, 0),
-    }))
+    const [totalCount, books] = await Promise.all([
+      totalCountPromise,
+      booksPromise,
+    ])
 
-    return res.status(200).json(booksWithRate)
+    const hasNextPage = offset + perPage < totalCount
+
+    return res
+      .status(200)
+      .json({ total_count: totalCount, items: books, hasNextPage })
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }

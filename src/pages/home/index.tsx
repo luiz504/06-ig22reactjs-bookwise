@@ -7,7 +7,7 @@ import { signIn } from 'next-auth/react'
 
 import IconGoogle from '~/assets/google-icon.svg'
 import IconGithub from '~/assets/github-fill-icon.svg'
-import iconRocket from '~/assets/rocket-icon.svg'
+import IconRocket from '~/assets/rocket-icon.svg'
 import logoFull from '~/assets/logo-full.png'
 import previewImg from '~/assets/preview.png'
 
@@ -51,19 +51,19 @@ export default function Home() {
 
             <section>
               <SignInOption as="button" onClick={() => signIn('google')}>
-                <Image src={IconGoogle} alt="Google logo" />
+                <IconGoogle />
 
                 <Heading>Entrar com Google</Heading>
               </SignInOption>
 
               <SignInOption as="button" onClick={() => signIn('github')}>
-                <Image src={IconGithub} alt="Github logo" />
+                <IconGithub />
 
                 <Heading>Entrar com Github</Heading>
               </SignInOption>
 
               <SignInOption as="button" onClick={() => router.push('/start')}>
-                <Image src={iconRocket} alt="Rocket icon" />
+                <IconRocket />
 
                 <Heading>Acessar como visitante</Heading>
               </SignInOption>

@@ -2,11 +2,11 @@ import { NextApiHandler } from 'next'
 import { z } from 'zod'
 
 import { prisma } from '~/lib/prisma'
+import { BooksWithCategoriesName } from '~/types/BooksWithCategoriesName'
 
-import { BookWithRate } from '~/types/BookWithRate'
 import { nextApiBuilder, NextAPIResponseError } from '~/utils/apiHandlerUtils'
 
-export type GetBookByIdResponse = BookWithRate
+export type GetBookByIdResponse = BooksWithCategoriesName
 
 const getBookByIdParamsSchema = z.object({
   bookId: z.string({
@@ -35,20 +35,31 @@ const getBookByIdHandler: NextApiHandler<
   } = params
 
   try {
-    const book = await prisma.book.findFirstOrThrow({
+    const book = await prisma.book.findUnique({
       where: { id: bookId },
       include: {
-        ratings: true,
+        categories: {
+          select: {
+            category: true,
+          },
+        },
       },
     })
-    const bookWithRate: BookWithRate = {
-      ...book,
-      rate: book.ratings.reduce((acc, cur) => acc + cur.rate, 0),
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' })
     }
 
-    return res.status(200).json(bookWithRate)
+    const categoriesName = book.categories.map((item) => item.category.name)
+
+    const bookWithCategoriesName: BooksWithCategoriesName = {
+      ...book,
+      categories: categoriesName,
+    }
+
+    return res.status(200).json(bookWithCategoriesName)
   } catch (err) {
-    return res.status(404).json({ message: 'Book not found' })
+    return res.status(500).json({ message: 'Internal Server Error' })
   }
 }
 

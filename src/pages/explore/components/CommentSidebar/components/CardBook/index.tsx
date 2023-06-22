@@ -13,10 +13,10 @@ import {
   ExtraInforCol,
 } from './styles'
 
-import { BookWithRate } from '~/types/BookWithRate'
+import { BooksWithCategoriesName } from '~/types/BooksWithCategoriesName'
 
 type CardBookProps = {
-  book: BookWithRate
+  book: BooksWithCategoriesName
 }
 
 export const CardBook: FC<CardBookProps> = ({ book }) => {
@@ -36,9 +36,12 @@ export const CardBook: FC<CardBookProps> = ({ book }) => {
           <Text>{book.author}</Text>
 
           <div className="rating-row">
-            <Rating rating={book.rate} />
+            <Rating rating={book.ratings_average} type="average" />
 
-            <Text size="sm">{book.ratings.length} avaliacoes</Text>
+            <Text size="sm">
+              {book.ratings_count}{' '}
+              {book.ratings_count === 1 ? 'avaliação' : 'avaliações'}
+            </Text>
           </div>
         </MainInfoCol>
       </MainInfoRow>
@@ -47,7 +50,7 @@ export const CardBook: FC<CardBookProps> = ({ book }) => {
           <BookmarkSimple weight="bold" size={24} />
           <div>
             <Text size="sm">Categoria</Text>
-            <Heading size="sm">Computação, Educação</Heading>
+            <Heading size="sm">{book.categories.join(', ')}</Heading>
           </div>
         </ExtraInforCol>
 
@@ -62,3 +65,5 @@ export const CardBook: FC<CardBookProps> = ({ book }) => {
     </CardBookContainer>
   )
 }
+
+export { CardBookSkeleton } from './skeleton'

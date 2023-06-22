@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 
 import { api } from '~/lib/axios'
+import { useSkeletonListGenerator } from '~/hooks/useSkeletonListGenetator'
 
 import { Button } from '~/components/Button'
-import { Skeleton } from '~/components/skeleton'
+import { Skeleton } from '~/components/Skeleton'
 import { Heading, Text } from '~/components/texts'
 import { Rating } from '~/components/Rating'
 
@@ -40,7 +41,7 @@ export const BooksSugestionAside = () => {
   const { isLoading } = queryBooksSuggestion
   const booksSuggested = queryBooksSuggestion.data?.items
 
-  const skeletonList = Array.from({ length: 4 }, (_, i) => ({ id: i }))
+  const skeletonList = useSkeletonListGenerator(4)
 
   return (
     <Container>
@@ -91,7 +92,7 @@ export const BooksSugestionAside = () => {
               <Heading size="sm">{book.name}</Heading>
               <Text size="sm">{book.author}</Text>
 
-              <Rating rating={book.rate_average} />
+              <Rating rating={book.ratings_average} type="average" />
             </ItemInfoCol>
           </SugestionItem>
         ))}

@@ -1,15 +1,9 @@
-import { Book } from '@prisma/client'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { z } from 'zod'
 import { prisma } from '~/lib/prisma'
+import { BookWithScore } from '~/types/BookWithScore'
 
 import { NextAPIResponseError, nextApiBuilder } from '~/utils/apiHandlerUtils'
-
-interface BookWithScore extends Book {
-  score: number
-  rate_average: number
-  ratings_count: number
-}
 
 export type GetBooksByRelevanceResponse = {
   total_count: number
@@ -46,23 +40,19 @@ const getBooksByRelevanceHandler: NextApiHandler = async (
 
   try {
     const booksFindQuery = prisma.$queryRaw<BookWithScore[]>`
-      SELECT *,
-        ROUND((5 * rate_average / 10 + 5 * (1 - (1 - 1.0 * ratings_count / 100) *
-          (1 - 1.0 * ratings_count / 100 / 2) *
-          (1 - 1.0 * ratings_count / 100 / 3) *
-          (1 - 1.0 * ratings_count / 100 / 4) *
-          (1 - 1.0 * ratings_count / 100 / 5))), 2) as score
-      FROM (
-        SELECT b.id, b.name, b.author, b.summary, b.cover_url, b.total_pages, b.created_at,
-          COALESCE(AVG(r.rate), 0) as rate_average,
-          CAST(COUNT(r.id) AS REAL) as ratings_count
-        FROM books b
-        LEFT JOIN ratings r ON b.id = r.book_id
-        GROUP BY b.id
-        LIMIT ${perPage}
-        OFFSET ${offSet}
-      ) as subquery
+      SELECT 
+        b.*,
+        ROUND((5 * b.ratings_average / 10 + 5 * (1 - (1 - 1.0 * b.ratings_count / 100) *
+        (1 - 1.0 * b.ratings_count / 100 / 2) *
+        (1 - 1.0 * b.ratings_count / 100 / 3) *
+        (1 - 1.0 * b.ratings_count / 100 / 4) *
+        (1 - 1.0 * b.ratings_count / 100 / 5))), 2) as score     
+      FROM books b
+      LEFT JOIN ratings r ON b.id = r.book_id
+      GROUP BY b.id
       ORDER BY score DESC
+      LIMIT ${perPage}
+      OFFSET ${offSet}
     `
     const booksCountQuery = prisma.book.count()
 
