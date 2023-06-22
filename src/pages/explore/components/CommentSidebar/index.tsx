@@ -30,6 +30,7 @@ import {
   useBookController,
   useComponentsController,
 } from './controllers'
+import { useQueryClient } from '@tanstack/react-query'
 
 type CommentSidebarProps = ComponentProps<typeof Root>
 
@@ -64,9 +65,15 @@ export const CommentSidebar = (props: CommentSidebarProps) => {
 
   const avalationsSkeletonList = useSkeletonListGenerator(3)
 
+  const queryClient = useQueryClient()
+
   function onSuccessCreateAvaliation() {
     refetchBook()
     refetchAvaliations()
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        query.queryKey.some((key) => key === 'explore-books'),
+    })
   }
 
   return (

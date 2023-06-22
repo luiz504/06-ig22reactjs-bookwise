@@ -54,8 +54,10 @@ export const useExplorePageController = () => {
       const { data } = await api.get<GetCategoriesResponse>('/categories/get', {
         signal,
       })
+
       return data
     },
+    staleTime: Infinity,
   })
 
   //* Books Fetchers / handlers
@@ -67,7 +69,7 @@ export const useExplorePageController = () => {
     hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
-    queryKey: ['books', { search, category }],
+    queryKey: ['explore-books', { search, category }],
     queryFn: async ({ signal, pageParam = 1 }) => {
       const params: GetBooksParams = {
         search,

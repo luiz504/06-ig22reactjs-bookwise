@@ -50,13 +50,11 @@ const getBookByIdHandler: NextApiHandler<
       return res.status(404).json({ message: 'Book not found' })
     }
 
-    const categoriesParser = book.categories.flatMap(
-      (item) => item.category.name,
-    )
+    const categoriesName = book.categories.map((item) => item.category.name)
 
     const bookWithCategoriesName: BooksWithCategoriesName = {
       ...book,
-      categories: categoriesParser,
+      categories: categoriesName,
     }
 
     return res.status(200).json(bookWithCategoriesName)

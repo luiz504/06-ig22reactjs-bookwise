@@ -5,6 +5,7 @@ import { prisma } from '~/lib/prisma'
 
 import { NextAPIResponseError, nextApiBuilder } from '~/utils/apiHandlerUtils'
 import { buildAuthOptions } from '../../auth/[...nextauth].api'
+import { Prisma } from '@prisma/client'
 
 export const RATE_OPTIONS = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] as const
 export type RateOption = (typeof RATE_OPTIONS)[number]
@@ -61,7 +62,41 @@ const postAvaliationHandler: NextApiHandler = async (
       },
     })
 
-    return res.status(200).json({ message: 'Success' })
+    const result = await prisma.$queryRaw<
+      { ratings_average: Prisma.Decimal }[]
+    >`
+      SELECT 
+        ROUND(COALESCE(AVG(r.rate), 0), 2) AS ratings_average
+      FROM 
+        ratings r
+      WHERE 
+        book_id = ${book_id}     
+    `
+
+    const ratings_average = result[0]?.ratings_average
+      ? Number(result[0].ratings_average)
+      : 0
+
+    if (!ratings_average) {
+      return res.status(201).json({
+        message: 'Success',
+        errors: ['Unable to update book ratings_avarage and ratings_count'],
+      })
+    }
+
+    await prisma.book.update({
+      where: { id: book_id },
+      data: {
+        ratings_count: {
+          increment: 1,
+        },
+        ratings_average: {
+          set: ratings_average,
+        },
+      },
+    })
+
+    return res.status(201).json({ message: 'Success' })
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
