@@ -5,7 +5,7 @@ import { Container } from './styles'
 import { User } from 'phosphor-react'
 
 interface ProfileImageProps extends Omit<ComponentProps<typeof Image>, 'src'> {
-  size?: 32 | 40
+  size?: 32 | 40 | 72
   src?: ComponentProps<typeof Image>['src']
 }
 

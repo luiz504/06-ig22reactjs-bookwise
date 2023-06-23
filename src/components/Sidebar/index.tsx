@@ -18,9 +18,11 @@ import {
 } from './styles'
 
 export const Sidebar = () => {
-  const { data: session } = useSession()
-  const logged = !!session?.user
   const router = useRouter()
+  const { data: session } = useSession()
+
+  const logged = !!session?.user
+  const user = session?.user
 
   return (
     <Container>
@@ -38,7 +40,10 @@ export const Sidebar = () => {
         </NavItem>
 
         {logged && (
-          <NavItem href={'/profile'} active={router.pathname === '/profile'}>
+          <NavItem
+            href={`/profile/${user?.id}`}
+            active={router.pathname === '/profile'}
+          >
             <User weight="bold" /> <Text>Profile</Text>
           </NavItem>
         )}
