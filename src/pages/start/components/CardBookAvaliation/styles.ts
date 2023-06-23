@@ -16,6 +16,16 @@ export const Header = styled('div', {
   gap: '$4',
   marginBottom: '$8',
 
+  a: {
+    borderRadius: '$full',
+    display: 'flex',
+    height: 'fit-content',
+    '&:focus': {
+      outline: 'none',
+      boxShadow: '0 0 0 2px $colors$gray200',
+    },
+  },
+
   img: {
     borderRadius: '$full',
   },
