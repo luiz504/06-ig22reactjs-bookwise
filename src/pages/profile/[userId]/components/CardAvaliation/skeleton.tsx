@@ -1,12 +1,13 @@
-import React from 'react'
+import { forwardRef } from 'react'
 
-import { Container, Content, MetaCol, MetaRow } from './styles'
 import { Skeleton } from '~/components/Skeleton'
 import { Text } from '~/components/texts'
 
-export const CardAvaliationSkeleton: React.FC = () => {
+import { Container, Content, MetaCol, MetaRow } from './styles'
+
+export const CardAvaliationSkeleton = forwardRef<HTMLDivElement>((_, ref) => {
   return (
-    <Container>
+    <Container ref={ref}>
       <Skeleton as={Text} css={{ height: 22, width: 120 }} bg={'gray700'} />
 
       <Content>
@@ -33,4 +34,6 @@ export const CardAvaliationSkeleton: React.FC = () => {
       </Content>
     </Container>
   )
-}
+})
+
+CardAvaliationSkeleton.displayName = 'CardAvaliationSkeleton'

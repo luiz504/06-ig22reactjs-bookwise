@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
@@ -11,7 +12,7 @@ import {
 import { ProfileAside, ProfileAsideSkeleton } from './components/ProfileAside'
 
 import { Sidebar } from '~/components/Sidebar'
-import { Heading } from '~/components/texts'
+import { FeedbackText, Heading } from '~/components/texts'
 import { AsideRight } from '~/components/GridLayout'
 import { TextInput } from '~/components/TextInput'
 
@@ -25,6 +26,7 @@ import {
   AvaliationsList,
 } from './styles'
 import { useProfilePageUserController } from './controllers/user.controller'
+import { useProfilePageAvaliationsController } from './controllers/avaliations.controller'
 
 export default function Profile() {
   const router = useRouter()
@@ -36,6 +38,20 @@ export default function Profile() {
 
   const loggedUserProfile =
     !!userId && !!sessionUserId && userId === sessionUserId
+
+  const {
+    searchInputRef,
+    handleSetSearchValue,
+    skeletonList,
+    hasNextPage,
+    loadMoreSkeletonRef,
+    avaliationsPages,
+    isLoadingAvaliations,
+    noResultsFound,
+    getFeedbackText,
+  } = useProfilePageAvaliationsController({
+    userId,
+  })
 
   const { user, isLoadingUser } = useProfilePageUserController({ userId })
 
@@ -65,13 +81,42 @@ export default function Profile() {
 
           <SubMain>
             <AvaliationsSection>
-              <label>
-                <TextInput placeholder="Buscar livro avaliado" />
-              </label>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  handleSetSearchValue()
+                }}
+              >
+                <label>
+                  <TextInput
+                    ref={searchInputRef}
+                    placeholder="Buscar livro avaliado"
+                    onBlur={handleSetSearchValue}
+                  />
+                </label>
+              </form>
 
               <AvaliationsList>
-                <CardAvaliation />
-                <CardAvaliationSkeleton />
+                {avaliationsPages?.map((page) => (
+                  <Fragment key={page?.id}>
+                    {page?.items?.map((item) => (
+                      <CardAvaliation key={item.id} avaliation={item} />
+                    ))}
+                  </Fragment>
+                ))}
+
+                {isLoadingAvaliations &&
+                  skeletonList.map((item) => (
+                    <CardAvaliationSkeleton key={item.id} />
+                  ))}
+
+                {hasNextPage && (
+                  <CardAvaliationSkeleton ref={loadMoreSkeletonRef} />
+                )}
+
+                {!isLoadingAvaliations && noResultsFound && (
+                  <FeedbackText>{getFeedbackText()}</FeedbackText>
+                )}
               </AvaliationsList>
             </AvaliationsSection>
 

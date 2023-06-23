@@ -72,10 +72,11 @@ export const AvaliationsList = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$6',
+  marginBottom: '$10',
 })
 
 export const AvaliationsSection = styled('section', {
-  [`> label`]: {
+  [`> form`]: {
     display: 'block',
     marginBottom: '$10',
   },

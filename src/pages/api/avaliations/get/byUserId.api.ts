@@ -4,12 +4,12 @@ import { prisma } from '~/lib/prisma'
 
 import { NextAPIResponseError, nextApiBuilder } from '~/utils/apiHandlerUtils'
 
-import { AvaliationWithBookAndUser } from '~/types/AvaliationWithBookAndUser'
+import { AvaliationWithBook } from '~/types/AvaliationWithBook'
 
 export type GetAvaliationsByUserIdResponse = {
   total_count: number
   hasNextPage: boolean
-  items: AvaliationWithBookAndUser[]
+  items: AvaliationWithBook[]
 }
 
 const getAvaliationsParamsSchema = z.object({
@@ -45,13 +45,11 @@ const getAvaliationsByUserIdHandler: NextApiHandler = async (
 
   const searchCriteria = search
     ? {
-        book: {
-          OR: [
-            { name: { contains: search } },
-            { author: { contains: search } },
-            { summary: { contains: search } },
-          ],
-        },
+        OR: [
+          { book: { name: { contains: search } } },
+          { book: { author: { contains: search } } },
+          { description: { contains: search } },
+        ],
       }
     : {}
   try {
@@ -75,13 +73,6 @@ const getAvaliationsByUserIdHandler: NextApiHandler = async (
         rate: true,
         description: true,
         created_at: true,
-        user: {
-          select: {
-            id: true,
-            avatar_url: true,
-            name: true,
-          },
-        },
         book: {
           select: {
             id: true,
