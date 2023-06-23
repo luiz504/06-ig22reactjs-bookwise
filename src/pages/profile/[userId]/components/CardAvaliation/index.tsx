@@ -1,18 +1,19 @@
-import React from 'react'
-
-import { Container, Content, MetaRow, MetaCol } from './styles'
-import { useDateFormatter } from '~/hooks/useDateFormater'
-import { Heading, Text } from '~/components/texts'
 import Image from 'next/image'
+
+import { useDateFormatter } from '~/hooks/useDateFormater'
+
+import { Heading, Text } from '~/components/texts'
 import { Rating } from '~/components/Rating'
 
-export const CardAvaliation: React.FC = () => {
+import { Container, Content, MetaRow, MetaCol } from './styles'
+
+export const CardAvaliation = () => {
   const { distanceFromNow } = useDateFormatter(new Date('2022-06-22'))
 
   return (
     <Container>
       <Text size={'sm'}>{distanceFromNow}</Text>
-      <Content variant={'secondary'}>
+      <Content>
         <MetaRow>
           <Image
             src={

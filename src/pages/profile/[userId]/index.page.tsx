@@ -8,7 +8,7 @@ import {
   CardAvaliation,
   CardAvaliationSkeleton,
 } from './components/CardAvaliation'
-import { ProfileAside } from './components/ProfileAside'
+import { ProfileAside, ProfileAsideSkeleton } from './components/ProfileAside'
 
 import { Sidebar } from '~/components/Sidebar'
 import { Heading } from '~/components/texts'
@@ -24,6 +24,7 @@ import {
   BtnGoBack,
   AvaliationsList,
 } from './styles'
+import { useProfilePageUserController } from './controllers/user.controller'
 
 export default function Profile() {
   const router = useRouter()
@@ -35,6 +36,8 @@ export default function Profile() {
 
   const loggedUserProfile =
     !!userId && !!sessionUserId && userId === sessionUserId
+
+  const { user, isLoadingUser } = useProfilePageUserController({ userId })
 
   return (
     <>
@@ -73,7 +76,8 @@ export default function Profile() {
             </AvaliationsSection>
 
             <AsideRight>
-              <ProfileAside />
+              {user && <ProfileAside user={user} />}
+              {(!user || isLoadingUser) && <ProfileAsideSkeleton />}
             </AsideRight>
           </SubMain>
         </Main>

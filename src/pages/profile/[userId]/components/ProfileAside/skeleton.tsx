@@ -1,54 +1,42 @@
 import React from 'react'
 import { BookOpen, BookmarkSimple, Books, UserList } from 'phosphor-react'
 
-import { ProfileImage } from '~/components/ProfileImage'
-import { useDateFormatter } from '~/hooks/useDateFormater'
+import { Skeleton } from '~/components/Skeleton'
 import { Heading, Text } from '~/components/texts'
 
 import { Container, Header, MetaItem, UserMetaList } from './styles'
 
-import { GetUserActivityResponse } from '~/pages/api/user/get/activity.api'
-
-type ProfileAsideProps = {
-  user: GetUserActivityResponse
-}
-export const ProfileAside: React.FC<ProfileAsideProps> = ({ user }) => {
-  const { distanceFromNow } = useDateFormatter(user.created_at)
-
+export const ProfileAsideSkeleton: React.FC = () => {
   const userMetas = {
     read_pages: {
-      value: 853,
       label: 'Páginas lidas',
       icon: <BookOpen weight={'bold'} size={32} />,
     },
     avaliated_books: {
-      value: 10,
       label: 'Livros Avaliados',
       icon: <Books weight={'bold'} size={32} />,
     },
     read_authors: {
-      value: 3,
       label: 'Autores lidos',
       icon: <UserList weight={'bold'} size={32} />,
     },
     category_most_read: {
-      value: 'Horror',
       label: 'Categoria mais lida',
       icon: <BookmarkSimple weight={'bold'} size={32} />,
     },
   }
-
   return (
     <Container>
       <Header>
-        <ProfileImage
-          src={user.avatar_url || ''}
-          alt={`foto de perfil do ${user.name} `}
-          size={72}
+        <Skeleton css={{ height: 72, width: 72 }} roundedFull bg={'gray700'} />
+
+        <Skeleton
+          as={Heading}
+          css={{ height: 28, width: '50%', marginBottom: '$1' }}
+          bg={'gray700'}
         />
 
-        <Heading>{user.name}</Heading>
-        <Text size={'sm'}>{distanceFromNow}</Text>
+        <Skeleton as={Text} css={{ height: 22, width: '50%' }} bg={'gray700'} />
       </Header>
 
       <hr />
@@ -59,7 +47,12 @@ export const ProfileAside: React.FC<ProfileAsideProps> = ({ user }) => {
             {value.icon}
 
             <div>
-              <Heading size="sm">{value.value}</Heading>
+              <Skeleton
+                as={Heading}
+                css={{ height: 22, width: 110, marginBottom: '$1' }}
+                bg={'gray700'}
+              />
+
               <Text size="sm">{value.label}</Text>
             </div>
           </MetaItem>
@@ -68,5 +61,3 @@ export const ProfileAside: React.FC<ProfileAsideProps> = ({ user }) => {
     </Container>
   )
 }
-
-export { ProfileAsideSkeleton } from './skeleton'
