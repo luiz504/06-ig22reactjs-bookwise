@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import Link from 'next/link'
 import dayjs from 'dayjs'
 
 import { ProfileImage } from '~/components/ProfileImage'
@@ -23,7 +24,9 @@ export const CardAvaliation: FC<CardAvaliationProps> = ({ avaliation }) => {
   return (
     <Container>
       <Header>
-        <ProfileImage src={avaliation.user.avatar_url || ''} alt="" />
+        <Link href={`/profile/${avaliation.user.id}`}>
+          <ProfileImage src={avaliation.user.avatar_url || ''} alt="" />
+        </Link>
         <div className="info-col">
           <Heading size={'sm'}>{avaliation.user.name}</Heading>
 

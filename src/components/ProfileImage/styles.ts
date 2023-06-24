@@ -54,6 +54,19 @@ export const Container = styled('div', {
           },
         },
       },
+      72: {
+        width: 72,
+        height: 72,
+        '.placeholder': {
+          width: 70,
+          height: 70,
+
+          svg: {
+            width: 56,
+            height: 56,
+          },
+        },
+      },
     },
   },
 })

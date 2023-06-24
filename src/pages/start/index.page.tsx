@@ -25,7 +25,7 @@ import {
 import {
   GetAvaliationsParams,
   GetAvaliationsResponse,
-} from '../api/avaliations/get.api'
+} from '../api/avaliations/get/index.api'
 
 export default function Start() {
   const { data, isLoading, fetchNextPage, isInitialLoading, hasNextPage } =

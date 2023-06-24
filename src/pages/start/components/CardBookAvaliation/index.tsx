@@ -13,6 +13,7 @@ import {
   UserInfo,
 } from './styles'
 import { useDateFormatter } from '~/hooks/useDateFormater'
+import Link from 'next/link'
 
 type CardBookAvaliationProps = {
   data: {
@@ -21,6 +22,7 @@ type CardBookAvaliationProps = {
     description: string
     rate: number
     user: {
+      id: string
       name: string
       avatar_url: string | null
     }
@@ -41,11 +43,14 @@ export const CardBookAvaliation: FC<CardBookAvaliationProps> = ({ data }) => {
   return (
     <Container variant={'secondary'}>
       <Header>
-        <ProfileImage
-          src={user.avatar_url || ''}
-          size={40}
-          alt="user profile"
-        />
+        <Link href={`/profile/${user.id}`}>
+          <ProfileImage
+            src={user.avatar_url || ''}
+            size={40}
+            alt="user profile"
+          />
+        </Link>
+
         <UserInfo>
           <Text size="md">{user.name}</Text>
           <time dateTime={createdDateTime || ''} title={createdTimeTitle || ''}>

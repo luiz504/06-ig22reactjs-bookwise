@@ -18,6 +18,16 @@ export const Header = styled('div', {
   gap: '$4',
   marginBottom: '$5',
 
+  a: {
+    borderRadius: '$full',
+    display: 'flex',
+    height: 'fit-content',
+    '&:focus': {
+      outline: 'none',
+      boxShadow: '0 0 0 2px $colors$gray200',
+    },
+  },
+
   '.info-col': {
     [`> ${Text}`]: {
       color: '$gray400',
