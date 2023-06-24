@@ -7,34 +7,34 @@ import { Heading, Text } from '~/components/texts'
 
 import { Container, Header, MetaItem, UserMetaList } from './styles'
 
-import { GetUserActivityResponse } from '~/pages/api/user/get/activity.api'
+import { UserWithActivity } from '~/types/UserWIthActivity'
 
 type ProfileAsideProps = {
-  user: GetUserActivityResponse
+  user: UserWithActivity
 }
 export const ProfileAside: React.FC<ProfileAsideProps> = ({ user }) => {
   const { distanceFromNow } = useDateFormatter(user.created_at)
 
   const userMetas = {
     read_pages: {
-      value: 853,
+      value: user.total_pages_read,
       label: 'Páginas lidas',
-      icon: <BookOpen weight={'bold'} size={32} />,
+      icon: <BookOpen weight={'regular'} size={32} />,
     },
     avaliated_books: {
-      value: 10,
+      value: user.total_rated_books,
       label: 'Livros Avaliados',
-      icon: <Books weight={'bold'} size={32} />,
+      icon: <Books weight={'regular'} size={32} />,
     },
     read_authors: {
-      value: 3,
+      value: user.total_authors_read,
       label: 'Autores lidos',
-      icon: <UserList weight={'bold'} size={32} />,
+      icon: <UserList weight={'regular'} size={32} />,
     },
     category_most_read: {
-      value: 'Horror',
+      value: user.most_read_category || '--',
       label: 'Categoria mais lida',
-      icon: <BookmarkSimple weight={'bold'} size={32} />,
+      icon: <BookmarkSimple weight={'regular'} size={32} />,
     },
   }
 

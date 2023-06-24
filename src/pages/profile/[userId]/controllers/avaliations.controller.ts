@@ -66,7 +66,7 @@ export const useProfilePageAvaliationsController = ({
     }
   }, [entry, isLoading, fetchNextPage])
 
-  const skeletonList = useSkeletonListGenerator(3)
+  const skeletonList = useSkeletonListGenerator(2)
 
   const noResultsFound = data?.pages[0]?.items.length === 0
 
