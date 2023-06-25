@@ -13,11 +13,10 @@ import { ProfileAside, ProfileAsideSkeleton } from './components/ProfileAside'
 
 import { Sidebar } from '~/components/Sidebar'
 import { FeedbackText, Heading } from '~/components/texts'
-import { AsideRight } from '~/components/GridLayout'
+import { AsideRight, ContainerDuoCol } from '~/components/GridLayout'
 import { TextInput } from '~/components/TextInput'
 
 import {
-  Container,
   Header,
   Main,
   SubMain,
@@ -59,7 +58,7 @@ export default function Profile() {
     <>
       <NextSeo title="Perfil | BookWise" />
 
-      <Container>
+      <ContainerDuoCol>
         <Sidebar />
         <Main>
           <Header>
@@ -126,7 +125,7 @@ export default function Profile() {
             </AsideRight>
           </SubMain>
         </Main>
-      </Container>
+      </ContainerDuoCol>
     </>
   )
 }

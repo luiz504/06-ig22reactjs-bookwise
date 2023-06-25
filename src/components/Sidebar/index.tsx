@@ -42,7 +42,7 @@ export const Sidebar = () => {
         {logged && (
           <NavItem
             href={`/profile/${user?.id}`}
-            active={router.pathname === '/profile'}
+            active={router.pathname.startsWith('/profile')}
           >
             <User weight="bold" /> <Text>Profile</Text>
           </NavItem>

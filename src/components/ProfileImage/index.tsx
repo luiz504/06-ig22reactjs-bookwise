@@ -16,7 +16,7 @@ export const ProfileImage = ({
   ...rest
 }: ProfileImageProps) => {
   return (
-    <Container size={size}>
+    <Container size={size} className="profile-image">
       <div className="placeholder">
         {!!src && (
           <Image src={src} alt={alt} height={size} width={size} {...rest} />
@@ -26,3 +26,5 @@ export const ProfileImage = ({
     </Container>
   )
 }
+
+ProfileImage.toString = () => '.profile-image'

@@ -6,6 +6,7 @@ import { Binoculars } from 'phosphor-react'
 
 import { buildQueryParams } from '~/utils'
 
+import { ContainerDuoCol } from '~/components/GridLayout'
 import { Rating } from '~/components/Rating'
 import { Heading, Text, FeedbackText } from '~/components/texts'
 import { Sidebar } from '~/components/Sidebar'
@@ -14,7 +15,6 @@ import { CommentSidebar } from './components/CommentSidebar'
 import { Skeleton } from '~/components/Skeleton'
 
 import {
-  Container,
   Main,
   Header,
   TopicsList,
@@ -49,7 +49,7 @@ export default function Explore() {
     <>
       <NextSeo title="Explorar | BookWise" />
 
-      <Container>
+      <ContainerDuoCol>
         <Sidebar />
         <Main>
           <Header as="form" onSubmit={handleSubmit}>
@@ -172,7 +172,7 @@ export default function Explore() {
             )}
           </BooksGridList>
         </Main>
-      </Container>
+      </ContainerDuoCol>
 
       {isOpenBookSidebar && (
         <CommentSidebar open={true} onOpenChange={handleCloseBookSidebar} />
