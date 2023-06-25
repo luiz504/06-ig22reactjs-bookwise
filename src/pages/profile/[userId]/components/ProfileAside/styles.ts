@@ -5,7 +5,7 @@ export const Container = styled('div', {
   display: 'flex',
   flexDirection: 'column',
 
-  borderLeft: '1px solid $gray700',
+  borderBottom: '1px solid $gray700',
 
   hr: {
     background: '$gradientHorizontal',
@@ -14,6 +14,11 @@ export const Container = styled('div', {
     width: '$8',
     margin: '$8 auto',
     borderRadius: '$full',
+  },
+
+  '@bp-850': {
+    borderLeft: '1px solid $gray700',
+    borderBottom: 0,
   },
 })
 
@@ -39,9 +44,14 @@ export const Header = styled('div', {
 
 export const UserMetaList = styled('div', {
   padding: '$5  3.5rem',
-  display: 'flex',
-  flexDirection: 'column',
+  display: 'grid',
   gap: '$10',
+
+  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+
+  '@bp-850': {
+    gridTemplateColumns: '1fr',
+  },
 })
 
 export const MetaItem = styled('div', {

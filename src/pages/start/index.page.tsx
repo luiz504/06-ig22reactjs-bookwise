@@ -8,14 +8,13 @@ import { useIntersection } from '~/hooks/useIntersection'
 import { useSkeletonListGenerator } from '~/hooks/useSkeletonListGenetator'
 
 import { Sidebar } from '~/components/Sidebar'
-import { AsideRight } from '~/components/GridLayout'
+import { AsideRight, ContainerDuoCol } from '~/components/GridLayout'
 import { CardBookAvaliation } from './components/CardBookAvaliation'
 import { BooksSugestionAside } from './components/BooksSugestionAside'
 import { FeedbackText, Heading, Text } from '~/components/texts'
 import { CardBookAvaliationSkeleton } from './components/CardBookAvaliation/skeleton'
 
 import {
-  Container,
   Main,
   Header,
   SectionRecentAvaliations,
@@ -71,7 +70,7 @@ export default function Start() {
     <>
       <NextSeo title="Início | BookWise" />
 
-      <Container>
+      <ContainerDuoCol>
         <Sidebar />
         <Main>
           <Header>
@@ -111,7 +110,7 @@ export default function Start() {
             </AsideRight>
           </AvaliationsSectAndSuggestionsContainer>
         </Main>
-      </Container>
+      </ContainerDuoCol>
     </>
   )
 }

@@ -1,22 +1,6 @@
 import { Heading } from '~/components/texts'
 import { styled } from '~/styles'
 
-export const Container = styled('div', {
-  background: '$gray800',
-  display: 'grid',
-  gridTemplateColumns: '232px 1fr',
-  gap: '$4',
-  padding: '$5',
-
-  '@bp-lg': {
-    gap: '$10',
-  },
-  '@bp-2xl': {
-    padding: '$5 6rem $5 $5',
-    gap: '6rem',
-  },
-})
-
 export const Header = styled('header', {
   marginTop: '3.25rem',
   display: 'flex',
@@ -56,8 +40,21 @@ export const Main = styled('main', {
 
 export const SubMain = styled('div', {
   display: 'grid',
-  gridTemplateColumns: '1fr  324px',
   gap: '$4',
+
+  '> section': {
+    order: 2,
+  },
+  '>aside': {
+    order: 1,
+  },
+
+  '@bp-850': {
+    gridTemplateColumns: '1fr  324px',
+    '> section, aside': {
+      order: 'initial',
+    },
+  },
 
   '@bp-lg': {
     gap: '$10',
@@ -68,16 +65,16 @@ export const SubMain = styled('div', {
   },
 })
 
-export const AvaliationsList = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '$6',
-  marginBottom: '$10',
-})
-
 export const AvaliationsSection = styled('section', {
   [`> form`]: {
     display: 'block',
     marginBottom: '$10',
   },
+})
+
+export const AvaliationsList = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$6',
+  marginBottom: '$10',
 })

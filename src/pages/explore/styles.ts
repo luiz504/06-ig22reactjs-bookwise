@@ -5,23 +5,17 @@ import { Box } from '~/components/Box'
 import { Heading, Text } from '~/components/texts'
 import { TextInput } from '~/components/TextInput'
 
-export const Container = styled('div', {
-  background: '$gray800',
-
-  display: 'grid',
-  gridTemplateColumns: '232px 1fr',
-  gap: '6rem',
-  padding: '$5 6rem $5 $5',
-})
-
 export const Main = styled('main', {})
 
 export const Header = styled('header', {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: '$4',
+  marginTop: '3.25rem',
   marginBottom: '$10',
+
+  display: 'flex',
+  flexDirection: 'column',
+
+  justifyContent: 'space-between',
+  gap: '$6',
 
   [`> ${Heading}`]: {
     display: 'flex',
@@ -37,7 +31,17 @@ export const Header = styled('header', {
   },
 
   [`& ${TextInput}`]: {
-    width: '433px',
+    width: '100%',
+  },
+
+  '@bp-sm': {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: '$4',
+
+    [`& ${TextInput}`]: {
+      maxWidth: 433,
+    },
   },
 })
 
