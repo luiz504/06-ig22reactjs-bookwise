@@ -116,10 +116,10 @@ const getUserActivityHandler: NextApiHandler = async (
 
     const userIncremented: UserWithActivity = {
       ...user,
-      total_pages_read: totalPagesRead[0].sum ?? 0,
-      total_rated_books: totalRatedBooks[0].count ?? 0,
-      total_authors_read: totalAuthorsRead[0].count ?? 0,
-      most_read_category: mostReadCategory[0].category_name,
+      total_pages_read: totalPagesRead[0]?.sum ?? 0,
+      total_rated_books: totalRatedBooks[0]?.count ?? 0,
+      total_authors_read: totalAuthorsRead[0]?.count ?? 0,
+      most_read_category: mostReadCategory[0]?.category_name || null,
     }
     return res.status(200).json(userIncremented)
   } catch (error) {
